@@ -9,3 +9,9 @@ public enum Weekday: Int, CaseIterable {
     case friday = 6
     case saturday = 7
 }
+
+extension Weekday: Comparable {
+    public static func < (lhs: Weekday, rhs: Weekday) -> Bool {
+        lhs.rawValue < rhs.rawValue
+    }
+}

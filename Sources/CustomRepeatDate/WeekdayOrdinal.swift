@@ -1,6 +1,6 @@
 import Foundation
 
-public enum WeekdayOrdinal: Int {
+public enum WeekdayOrdinal: Int, CaseIterable {
     case first = 1
     case second = 2
     case third = 3

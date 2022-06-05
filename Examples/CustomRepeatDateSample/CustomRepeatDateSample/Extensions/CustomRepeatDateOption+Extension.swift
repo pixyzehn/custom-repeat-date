@@ -10,6 +10,7 @@ extension CustomRepeatDateOption {
             } else {
                 return "Repeat every \(frequency) days"
             }
+
         case let .weekly(frequency: frequency, weekdays: weekdays):
             var result = ""
 
@@ -19,8 +20,9 @@ extension CustomRepeatDateOption {
                 result += "Repeat every \(frequency) weeks"
             }
 
-            result += " on \(ListFormatter().string(from: weekdays.map { $0.name })!)"
+            result += " on \(ListFormatter.localizedString(byJoining: weekdays.map { $0.name }))"
             return result
+
         case let .monthly(frequency: frequency, option: option):
             var result = ""
 
@@ -36,13 +38,14 @@ extension CustomRepeatDateOption {
                     return result
                 } else {
                     let dayNames = days.map { "\($0)\(daySuffix(day: $0))" }
-                    result += " on \(ListFormatter().string(from: dayNames)!)"
+                    result += " on \(ListFormatter.localizedString(byJoining: dayNames))"
                     return result
                 }
             case let .daysOfWeek(weekdayOrdinal, weekday):
                 result += " on the \(weekdayOrdinal.name) \(weekday.name)"
                 return result
             }
+
         case let .yearly(frequency: frequency, option: option):
             var result = ""
 
@@ -55,12 +58,12 @@ extension CustomRepeatDateOption {
             switch option {
             case let .daysOfYear(months, _):
                 let monthNames = months.map { DateFormatter().monthSymbols[$0 - 1] }
-                result += " in \(ListFormatter().string(from: monthNames)!)"
+                result += " in \(ListFormatter.localizedString(byJoining: monthNames))"
                 return result
             case let .daysOfWeek(months, weekdayOrdinal, weekday):
                 let monthNames = months.map { DateFormatter().monthSymbols[$0 - 1] }
                 result += " on the \(weekdayOrdinal.name) \(weekday.name)"
-                result += " of \(ListFormatter().string(from: monthNames)!)"
+                result += " of \(ListFormatter.localizedString(byJoining: monthNames))"
                 return result
             }
         }

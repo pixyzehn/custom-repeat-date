@@ -78,7 +78,6 @@ final class CustomRepeatDateTests: XCTestCase {
             XCTAssertEqual(repeat1, date(year: 2042, month: 2, day: 9))
             XCTAssertEqual(repeat2, date(year: 2061, month: 4, day: 3))
             XCTAssertEqual(repeat3, date(year: 2080, month: 5, day: 26))
-
         }
     }
 

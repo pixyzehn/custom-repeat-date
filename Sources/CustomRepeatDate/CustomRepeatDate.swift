@@ -41,11 +41,9 @@ public extension Calendar {
                 ) { matchingDate, _, stop in
                     guard let matchingDate = matchingDate else { stop = true; return }
                     let matchingWeekOfYear = component(.weekOfYear, from: matchingDate)
-
                     if matchingWeekOfYear == weekOfYear {
                         result.append(matchingDate)
                     }
-
                     stop = true
                 }
 
@@ -94,11 +92,9 @@ public extension Calendar {
                         guard let matchingDate = matchingDate else { stop = true; return }
                         let matchingYear = component(.year, from: matchingDate)
                         let matchingMonth = component(.month, from: matchingDate)
-
                         if matchingYear == year, matchingMonth == month {
                             result.append(matchingDate)
                         }
-
                         stop = true
                     }
 
@@ -147,11 +143,9 @@ public extension Calendar {
                     guard let matchingDate = matchingDate else { stop = true; return }
                     let matchingYear = component(.year, from: matchingDate)
                     let matchingMonth = component(.month, from: matchingDate)
-
                     if matchingYear == year, matchingMonth == month {
                         result.append(matchingDate)
                     }
-
                     stop = true
                 }
 
@@ -203,11 +197,9 @@ public extension Calendar {
                     ) { matchingDate, _, stop in
                         guard let matchingDate = matchingDate else { stop = true; return }
                         let matchingYear = component(.year, from: matchingDate)
-
                         if matchingYear == year {
                             result.append(matchingDate)
                         }
-
                         stop = true
                     }
 
@@ -254,11 +246,9 @@ public extension Calendar {
                     ) { matchingDate, _, stop in
                         guard let matchingDate = matchingDate else { stop = true; return }
                         let matchingYear = component(.year, from: matchingDate)
-
                         if matchingYear == year {
                             result.append(matchingDate)
                         }
-
                         stop = true
                     }
 

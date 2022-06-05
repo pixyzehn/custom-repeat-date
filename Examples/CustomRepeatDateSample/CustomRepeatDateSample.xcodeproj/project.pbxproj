@@ -67,12 +67,12 @@
 		F572E1F22847811600FC992D /* CustomRepeatDateSample */ = {
 			isa = PBXGroup;
 			children = (
-				F572E2132848242400FC992D /* Info.plist */,
 				F572E1F32847811600FC992D /* CustomRepeatDateSampleApp.swift */,
 				F572E206284781A900FC992D /* Views */,
 				F572E207284781CA00FC992D /* Helpers */,
 				F572E20C2847820600FC992D /* Extensions */,
-				F572E1F72847811700FC992D /* Assets.xcassets */,
+				F5D5CC8F284CD90A004156D9 /* Resources */,
+				F572E2132848242400FC992D /* Info.plist */,
 				F572E1F92847811700FC992D /* Preview Content */,
 			);
 			path = CustomRepeatDateSample;
@@ -126,6 +126,14 @@
 				F5D5CC8C284CC556004156D9 /* custom-repeat-date */,
 			);
 			name = Packages;
+			sourceTree = "<group>";
+		};
+		F5D5CC8F284CD90A004156D9 /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				F572E1F72847811700FC992D /* Assets.xcassets */,
+			);
+			path = Resources;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */

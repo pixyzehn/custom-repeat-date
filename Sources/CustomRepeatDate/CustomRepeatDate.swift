@@ -1,26 +1,26 @@
 import Foundation
 
-extension Calendar {
+public extension Calendar {
     /// Computes the next date which matches a given option.
     ///
     /// - parameter date: The starting date.
     /// - parameter option: The custom repeat date option.
     /// - returns: A `Date` representing the result of the search, or `nil` if a result could not be found or a calendar isn't Gregorian.
-    public func nextDate(after date: Date, option: CustomRepeatDateOption) -> Date? {
+    func nextDate(after date: Date, option: CustomRepeatDateOption) -> Date? {
         guard identifier == .gregorian else {
             return nil
         }
 
         switch option {
         case let .daily(frequency):
-            guard 1...999 ~= frequency else {
+            guard 1 ... 999 ~= frequency else {
                 return nil
             }
 
             return self.date(byAdding: .day, value: frequency, to: date)
 
         case let .weekly(frequency, weekdays):
-            guard 1...999 ~= frequency, !weekdays.isEmpty else {
+            guard 1 ... 999 ~= frequency, !weekdays.isEmpty else {
                 return nil
             }
 
@@ -65,13 +65,13 @@ extension Calendar {
             return result.sorted().first
 
         case let .monthly(frequency, option):
-            guard 1...999 ~= frequency else {
+            guard 1 ... 999 ~= frequency else {
                 return nil
             }
 
             switch option {
             case let .daysOfMonth(days):
-                guard !days.isEmpty, days.allSatisfy({ 1 <= $0 && $0 <= 31 }) else {
+                guard !days.isEmpty, days.allSatisfy({ $0 >= 1 && $0 <= 31 }) else {
                     return nil
                 }
 
@@ -175,13 +175,13 @@ extension Calendar {
             }
 
         case let .yearly(frequency, option):
-            guard 1...999 ~= frequency else {
+            guard 1 ... 999 ~= frequency else {
                 return nil
             }
 
             switch option {
             case let .daysOfYear(months, day):
-                guard !months.isEmpty, months.allSatisfy({ 1 <= $0 && $0 <= 12 }), 1 <= day, day <= 31 else {
+                guard !months.isEmpty, months.allSatisfy({ $0 >= 1 && $0 <= 12 }), day >= 1, day <= 31 else {
                     return nil
                 }
 
@@ -231,7 +231,7 @@ extension Calendar {
                 return result.sorted().first
 
             case let .daysOfWeek(months, weekdayOrdinal, weekday):
-                guard !months.isEmpty, months.allSatisfy({ 1 <= $0 && $0 <= 12 }) else {
+                guard !months.isEmpty, months.allSatisfy({ $0 >= 1 && $0 <= 12 }) else {
                     return nil
                 }
 
@@ -278,7 +278,6 @@ extension Calendar {
                         result.append(matchingDate)
                         stop = true
                     }
-
                 }
 
                 return result.sorted().first

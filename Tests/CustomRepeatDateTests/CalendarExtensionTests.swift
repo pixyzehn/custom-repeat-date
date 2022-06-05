@@ -1,5 +1,5 @@
-import XCTest
 @testable import CustomRepeatDate
+import XCTest
 
 class CalendarExtensionTests: XCTestCase {
     lazy var calendar: Calendar = {

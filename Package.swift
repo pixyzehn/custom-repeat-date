@@ -8,7 +8,8 @@ let package = Package(
     products: [
         .library(
             name: "CustomRepeatDate",
-            targets: ["CustomRepeatDate"]),
+            targets: ["CustomRepeatDate"]
+        ),
     ],
     dependencies: [
         .package(url: "https://github.com/apple/swift-docc-plugin", from: "1.0.0"),
@@ -16,9 +17,11 @@ let package = Package(
     targets: [
         .target(
             name: "CustomRepeatDate",
-            dependencies: []),
+            dependencies: []
+        ),
         .testTarget(
             name: "CustomRepeatDateTests",
-            dependencies: ["CustomRepeatDate"]),
+            dependencies: ["CustomRepeatDate"]
+        ),
     ]
 )

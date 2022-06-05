@@ -15,8 +15,8 @@ struct PickerView: UIViewRepresentable {
         return picker
     }
 
-    func updateUIView(_ view: UIPickerView, context: UIViewRepresentableContext<PickerView>) {
-        for index in 0..<selections.count {
+    func updateUIView(_ view: UIPickerView, context _: UIViewRepresentableContext<PickerView>) {
+        for index in 0 ..< selections.count {
             view.selectRow(selections[index], inComponent: index, animated: false)
         }
     }
@@ -28,19 +28,19 @@ struct PickerView: UIViewRepresentable {
             parent = pickerView
         }
 
-        func numberOfComponents(in pickerView: UIPickerView) -> Int {
+        func numberOfComponents(in _: UIPickerView) -> Int {
             parent.data.count
         }
 
-        func pickerView(_ pickerView: UIPickerView, numberOfRowsInComponent component: Int) -> Int {
+        func pickerView(_: UIPickerView, numberOfRowsInComponent component: Int) -> Int {
             parent.data[component].count
         }
 
-        func pickerView(_ pickerView: UIPickerView, titleForRow row: Int, forComponent component: Int) -> String? {
+        func pickerView(_: UIPickerView, titleForRow row: Int, forComponent component: Int) -> String? {
             parent.data[component][row]
         }
 
-        func pickerView(_ pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
+        func pickerView(_: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
             parent.selections[component] = row
         }
     }

@@ -1,5 +1,5 @@
-import SwiftUI
 import CustomRepeatDate
+import SwiftUI
 
 struct CustomRepeatDateView: View {
     @Binding var date: Date
@@ -20,6 +20,7 @@ struct CustomRepeatDateView: View {
         case daysOfMonth
         case daysOfWeek
     }
+
     @State var selectedMonthlyType: MonthlyType = .daysOfMonth
     @State var selectedDaysOfMonth: Set<Int> = [1]
     @State var selectedDaysOfWeekInMonthly: [Int] = [0, 0]
@@ -31,7 +32,7 @@ struct CustomRepeatDateView: View {
 
     let allDaysOfWeek: [[String]] = [
         WeekdayOrdinal.allCases.map { $0.name },
-        Weekday.allCases.map { $0.name }
+        Weekday.allCases.map { $0.name },
     ]
     let allFrequencies = Frequency.allCases
 
@@ -89,7 +90,6 @@ struct CustomRepeatDateView: View {
         selectedMonthsOfYear = [1]
         isDaysOfWeekEnabled = false
         selectedDaysOfWeekInYearly = [1, 1]
-
     }
 
     var body: some View {
@@ -119,7 +119,7 @@ struct CustomRepeatDateView: View {
                             }
                         }
                         .pickerStyle(.wheel)
-                        .onChange(of: selectedFrequency) { newValue in
+                        .onChange(of: selectedFrequency) { _ in
                             updateOption()
                         }
                     }
@@ -138,12 +138,12 @@ struct CustomRepeatDateView: View {
                     }
                     if isEverySelection {
                         Picker("", selection: $selectedEvery) {
-                            ForEach(1...999, id: \.self) {
+                            ForEach(1 ... 999, id: \.self) {
                                 Text("\($0)")
                             }
                         }
                         .pickerStyle(.wheel)
-                        .onChange(of: selectedEvery) { newValue in
+                        .onChange(of: selectedEvery) { _ in
                             updateOption()
                         }
                     }
@@ -202,14 +202,14 @@ struct CustomRepeatDateView: View {
                         if selectedMonthlyType == .daysOfMonth {
                             VStack(spacing: 0) {
                                 Divider()
-                                    .frame(height: 1/UIScreen.main.scale)
+                                    .frame(height: 1 / UIScreen.main.scale)
                                     .background(Color(uiColor: .systemGroupedBackground))
                                     .padding(0)
                                 LazyVGrid(columns: Array(repeating: GridItem(.flexible(minimum: 4), spacing: 1), count: 7), spacing: 1) {
-                                    ForEach((1...31), id: \.self) { index in
+                                    ForEach(1 ... 31, id: \.self) { index in
                                         ZStack {
                                             Rectangle()
-                                                .foregroundColor(selectedDaysOfMonth.contains(index) ? .blue: Color(uiColor: .secondarySystemGroupedBackground))
+                                                .foregroundColor(selectedDaysOfMonth.contains(index) ? .blue : Color(uiColor: .secondarySystemGroupedBackground))
                                                 .aspectRatio(1, contentMode: .fill)
                                             Text("\(index)")
                                                 .foregroundColor(.primary)
@@ -226,7 +226,6 @@ struct CustomRepeatDateView: View {
 
                                             updateOption()
                                         }
-
                                     }
                                 }
                                 .background(Color(uiColor: .systemGroupedBackground))
@@ -235,19 +234,19 @@ struct CustomRepeatDateView: View {
                             .listRowSeparator(.hidden)
                         } else {
                             PickerView(data: allDaysOfWeek, selections: $selectedDaysOfWeekInMonthly)
-                                .onChange(of: selectedDaysOfWeekInMonthly) { newValue in
+                                .onChange(of: selectedDaysOfWeekInMonthly) { _ in
                                     updateOption()
                                 }
                         }
                     } else if selectedFrequency == .yearly {
                         LazyVGrid(columns: Array(repeating: GridItem(.flexible(minimum: 4), spacing: 1), count: 4), spacing: 1) {
-                            ForEach(1...12, id: \.self) { index in
+                            ForEach(1 ... 12, id: \.self) { index in
                                 ZStack {
                                     Rectangle()
                                         .frame(height: 50)
-                                        .foregroundColor(selectedMonthsOfYear.contains(index) ? .blue: Color(uiColor: .secondarySystemGroupedBackground))
+                                        .foregroundColor(selectedMonthsOfYear.contains(index) ? .blue : Color(uiColor: .secondarySystemGroupedBackground))
                                         .aspectRatio(1, contentMode: .fill)
-                                    Text(DateFormatter().monthSymbols[index-1])
+                                    Text(DateFormatter().monthSymbols[index - 1])
                                         .foregroundColor(.primary)
                                 }
                                 .frame(maxWidth: .infinity)
@@ -272,12 +271,12 @@ struct CustomRepeatDateView: View {
                 if selectedFrequency == .yearly {
                     Section {
                         Toggle("Days of Week", isOn: $isDaysOfWeekEnabled)
-                            .onChange(of: isDaysOfWeekEnabled) { newValue in
+                            .onChange(of: isDaysOfWeekEnabled) { _ in
                                 updateOption()
                             }
                         if isDaysOfWeekEnabled {
                             PickerView(data: allDaysOfWeek, selections: $selectedDaysOfWeekInYearly)
-                                .onChange(of: selectedDaysOfWeekInYearly) { newValue in
+                                .onChange(of: selectedDaysOfWeekInYearly) { _ in
                                     updateOption()
                                 }
                         }
@@ -288,7 +287,7 @@ struct CustomRepeatDateView: View {
             .navigationTitle("Custom")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
-                ToolbarItem(placement: .navigationBarTrailing){
+                ToolbarItem(placement: .navigationBarTrailing) {
                     Button(action: {
                         reset()
                     }) {

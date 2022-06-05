@@ -1,5 +1,5 @@
-import XCTest
 @testable import CustomRepeatDate
+import XCTest
 
 final class CustomRepeatDateTests: XCTestCase {
     lazy var calendar: Calendar = {
@@ -233,7 +233,7 @@ final class CustomRepeatDateTests: XCTestCase {
 
     func testYearlyCustomRepeatDateDaysOfWeek() {
         let option = CustomRepeatDateOption.yearly(frequency: 2, option: .daysOfWeek(months: [3, 8, 9], weekdayOrdinal: .first, weekday: .saturday))
-        
+
         let repeat1 = calendar.nextDate(after: date(year: 2022, month: 5, day: 5), option: option)!
         let repeat2 = calendar.nextDate(after: repeat1, option: option)!
         let repeat3 = calendar.nextDate(after: repeat2, option: option)!

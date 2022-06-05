@@ -10,7 +10,7 @@ extension CustomRepeatDateOption {
             } else {
                 return "Repeat every \(frequency) days"
             }
-        case .weekly(frequency: let frequency, weekdays: let weekdays):
+        case let .weekly(frequency: frequency, weekdays: weekdays):
             var result = ""
 
             if frequency == 1 {
@@ -21,7 +21,7 @@ extension CustomRepeatDateOption {
 
             result += " on \(ListFormatter().string(from: weekdays.map { $0.name })!)"
             return result
-        case .monthly(frequency: let frequency, option: let option):
+        case let .monthly(frequency: frequency, option: option):
             var result = ""
 
             if frequency == 1 {
@@ -31,7 +31,7 @@ extension CustomRepeatDateOption {
             }
 
             switch option {
-            case .daysOfMonth(let days):
+            case let .daysOfMonth(days):
                 if days.count == 1 {
                     return result
                 } else {
@@ -39,11 +39,11 @@ extension CustomRepeatDateOption {
                     result += " on \(ListFormatter().string(from: dayNames)!)"
                     return result
                 }
-            case .daysOfWeek(let weekdayOrdinal, let weekday):
+            case let .daysOfWeek(weekdayOrdinal, weekday):
                 result += " on the \(weekdayOrdinal.name) \(weekday.name)"
                 return result
             }
-        case .yearly(frequency: let frequency, option: let option):
+        case let .yearly(frequency: frequency, option: option):
             var result = ""
 
             if frequency == 1 {
@@ -53,12 +53,12 @@ extension CustomRepeatDateOption {
             }
 
             switch option {
-            case .daysOfYear(let months, _):
-                let monthNames = months.map { DateFormatter().monthSymbols[$0-1] }
+            case let .daysOfYear(months, _):
+                let monthNames = months.map { DateFormatter().monthSymbols[$0 - 1] }
                 result += " in \(ListFormatter().string(from: monthNames)!)"
                 return result
-            case .daysOfWeek(let months, let weekdayOrdinal, let weekday):
-                let monthNames = months.map { DateFormatter().monthSymbols[$0-1] }
+            case let .daysOfWeek(months, weekdayOrdinal, weekday):
+                let monthNames = months.map { DateFormatter().monthSymbols[$0 - 1] }
                 result += " on the \(weekdayOrdinal.name) \(weekday.name)"
                 result += " of \(ListFormatter().string(from: monthNames)!)"
                 return result
@@ -68,19 +68,19 @@ extension CustomRepeatDateOption {
 
     private func daySuffix(day: Int) -> String {
         switch day {
-          case 11...13:
+        case 11 ... 13:
             return "th"
-          default:
-              switch day % 10 {
-              case 1:
-                  return "st"
-              case 2:
-                  return "nd"
-              case 3:
-                  return "rd"
-              default:
-                  return "th"
-              }
-          }
+        default:
+            switch day % 10 {
+            case 1:
+                return "st"
+            case 2:
+                return "nd"
+            case 3:
+                return "rd"
+            default:
+                return "th"
+            }
+        }
     }
 }

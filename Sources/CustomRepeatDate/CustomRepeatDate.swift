@@ -24,41 +24,45 @@ extension Calendar {
                 return nil
             }
 
-            // Check date in the same week
-            let dateInSameWeek: Date? = weekdays.compactMap {
+            var result = [Date]()
+            let weekOfYear = component(.weekOfYear, from: date)
+            let afterDate = self.date(byAdding: .weekOfYear, value: frequency, to: date) ?? date
+
+            for weekday in weekdays {
                 var dateComponents = dateComponents([.hour, .minute, .second], from: date)
-                dateComponents.weekday = $0.rawValue
-                dateComponents.year = component(.year, from: date)
-                dateComponents.weekOfYear = component(.weekOfYear, from: date)
-                return nextDate(
-                    after: date,
+                dateComponents.weekday = weekday.rawValue
+
+                enumerateDates(
+                    startingAfter: date,
                     matching: dateComponents,
-                    matchingPolicy: .nextTime,
+                    matchingPolicy: .strict,
                     repeatedTimePolicy: .first,
                     direction: .forward
-                )
-            }.sorted().first
+                ) { matchingDate, _, stop in
+                    guard let matchingDate = matchingDate else { stop = true; return }
+                    let matchingWeekOfYear = component(.weekOfYear, from: matchingDate)
 
-            if let dateInSameWeek = dateInSameWeek {
-                return dateInSameWeek
-            }
+                    if matchingWeekOfYear == weekOfYear {
+                        result.append(matchingDate)
+                    }
 
-            // Check next date based on frequency
-            guard let afterDate = self.date(byAdding: .weekOfYear, value: frequency, to: startOfWeek(for: date)) else {
-                return nil
-            }
+                    stop = true
+                }
 
-            return weekdays.compactMap {
-                var dateComponents = dateComponents([.hour, .minute, .second], from: date)
-                dateComponents.weekday = $0.rawValue
-                return nextDate(
-                    after: afterDate,
+                enumerateDates(
+                    startingAfter: startOfDay(for: afterDate),
                     matching: dateComponents,
-                    matchingPolicy: .nextTime,
+                    matchingPolicy: .strict,
                     repeatedTimePolicy: .first,
                     direction: .forward
-                )
-            }.sorted().first
+                ) { matchingDate, _, stop in
+                    guard let matchingDate = matchingDate else { stop = true; return }
+                    result.append(matchingDate)
+                    stop = true
+                }
+            }
+
+            return result.sorted().first
 
         case let .monthly(frequency, option):
             guard 1...999 ~= frequency else {
@@ -71,84 +75,103 @@ extension Calendar {
                     return nil
                 }
 
-                // Check date in the same month
-                let dateInSameMonth: Date? = days.compactMap {
-                    guard component(.day, from: date) < $0 else {
-                        return nil
+                var result = [Date]()
+                let year = component(.year, from: date)
+                let month = component(.month, from: date)
+                var afterDate = self.date(byAdding: .month, value: frequency, to: date) ?? date
+
+                for day in days {
+                    var dateComponents = dateComponents([.hour, .minute, .second], from: date)
+                    dateComponents.day = day
+
+                    enumerateDates(
+                        startingAfter: date,
+                        matching: dateComponents,
+                        matchingPolicy: .strict,
+                        repeatedTimePolicy: .first,
+                        direction: .forward
+                    ) { matchingDate, _, stop in
+                        guard let matchingDate = matchingDate else { stop = true; return }
+                        let matchingYear = component(.year, from: matchingDate)
+                        let matchingMonth = component(.month, from: matchingDate)
+
+                        if matchingYear == year, matchingMonth == month {
+                            result.append(matchingDate)
+                        }
+
+                        stop = true
                     }
 
-                    var dateComponents = dateComponents([.hour, .minute, .second], from: date)
-                    dateComponents.day = $0
-                    dateComponents.year = component(.year, from: date)
-                    dateComponents.month = component(.month, from: date)
-                    return nextDate(
-                        after: date,
-                        matching: dateComponents,
-                        matchingPolicy: .nextTime,
+                    var afterDateComponents = self.dateComponents([.hour, .minute, .second], from: afterDate)
+                    afterDateComponents.day = day
+
+                    // Update afterDate until it found the day
+                    var maxDay = range(of: .day, in: .month, for: afterDate)?.count ?? 0
+                    while day > maxDay {
+                        afterDate = self.date(byAdding: .month, value: frequency, to: afterDate) ?? afterDate
+                        maxDay = range(of: .day, in: .month, for: afterDate)?.count ?? 0
+                    }
+
+                    enumerateDates(
+                        startingAfter: startOfMonth(for: afterDate),
+                        matching: afterDateComponents,
+                        matchingPolicy: .strict,
                         repeatedTimePolicy: .first,
                         direction: .forward
-                    )
-                }.sorted().first
-
-                if let dateInSameMonth = dateInSameMonth {
-                    return dateInSameMonth
+                    ) { matchingDate, _, stop in
+                        guard let matchingDate = matchingDate else { stop = true; return }
+                        result.append(matchingDate)
+                        stop = true
+                    }
                 }
 
-                // Check next date based on frequency
-                guard let afterDate = self.date(byAdding: .month, value: frequency, to: startOfMonth(for: date)) else {
-                    return nil
-                }
-
-                return days.compactMap {
-                    var dateComponents = dateComponents([.hour, .minute, .second], from: date)
-                    dateComponents.year = component(.year, from: afterDate)
-                    dateComponents.month = component(.month, from: afterDate)
-                    dateComponents.day = $0
-                    return nextDate(
-                        after: afterDate,
-                        matching: dateComponents,
-                        matchingPolicy: .nextTime,
-                        repeatedTimePolicy: .first,
-                        direction: .forward
-                    )
-                }.sorted().first
+                return result.sorted().first
 
             case let .daysOfWeek(weekdayOrdinal, weekday):
-                // Check date in the same month
-                let dateInSameMonth: Date? = {
-                    var dateComponents = self.dateComponents([.hour, .minute, .second], from: date)
-                    dateComponents.year = component(.year, from: date)
-                    dateComponents.month = component(.month, from: date)
-                    dateComponents.weekday = weekday.rawValue
-                    dateComponents.weekdayOrdinal = weekdayOrdinal.rawValue
-                    return nextDate(
-                        after: date,
-                        matching: dateComponents,
-                        matchingPolicy: .nextTime,
-                        repeatedTimePolicy: .first,
-                        direction: .forward
-                    )
-                }()
-
-                if let dateInSameMonth = dateInSameMonth {
-                    return dateInSameMonth
-                }
-
-                // Check next date based on frequency
-                guard let afterDate = self.date(byAdding: .month, value: frequency, to: startOfMonth(for: date)) else {
-                    return nil
-                }
+                var result = [Date]()
+                let year = component(.year, from: date)
+                let month = component(.month, from: date)
+                let afterDate = self.date(byAdding: .month, value: frequency, to: date) ?? date
 
                 var dateComponents = dateComponents([.hour, .minute, .second], from: date)
                 dateComponents.weekday = weekday.rawValue
                 dateComponents.weekdayOrdinal = weekdayOrdinal.rawValue
-                return nextDate(
-                    after: afterDate,
+
+                enumerateDates(
+                    startingAfter: date,
                     matching: dateComponents,
-                    matchingPolicy: .nextTime,
+                    matchingPolicy: .strict,
                     repeatedTimePolicy: .first,
                     direction: .forward
-                )
+                ) { matchingDate, _, stop in
+                    guard let matchingDate = matchingDate else { stop = true; return }
+                    let matchingYear = component(.year, from: matchingDate)
+                    let matchingMonth = component(.month, from: matchingDate)
+
+                    if matchingYear == year, matchingMonth == month {
+                        result.append(matchingDate)
+                    }
+
+                    stop = true
+                }
+
+                var afterDateComponents = self.dateComponents([.hour, .minute, .second], from: afterDate)
+                afterDateComponents.weekday = weekday.rawValue
+                afterDateComponents.weekdayOrdinal = weekdayOrdinal.rawValue
+
+                enumerateDates(
+                    startingAfter: startOfMonth(for: afterDate),
+                    matching: afterDateComponents,
+                    matchingPolicy: .strict,
+                    repeatedTimePolicy: .first,
+                    direction: .forward
+                ) { matchingDate, _, stop in
+                    guard let matchingDate = matchingDate else { stop = true; return }
+                    result.append(matchingDate)
+                    stop = true
+                }
+
+                return result.sorted().first
             }
 
         case let .yearly(frequency, option):
@@ -162,86 +185,103 @@ extension Calendar {
                     return nil
                 }
 
-                // Check date in the same year
-                let dateInSameYear: Date? = months.compactMap {
+                var result = [Date]()
+                let year = component(.year, from: date)
+                let afterDate = self.date(byAdding: .year, value: frequency, to: date) ?? date
+
+                for month in months {
                     var dateComponents = dateComponents([.hour, .minute, .second], from: date)
-                    dateComponents.year = component(.year, from: date)
-                    dateComponents.month = $0
+                    dateComponents.month = month
                     dateComponents.day = day
-                    return nextDate(
-                        after: date,
+
+                    enumerateDates(
+                        startingAfter: date,
                         matching: dateComponents,
-                        matchingPolicy: .nextTime,
+                        matchingPolicy: .strict,
                         repeatedTimePolicy: .first,
                         direction: .forward
-                    )
-                }.sorted().first
+                    ) { matchingDate, _, stop in
+                        guard let matchingDate = matchingDate else { stop = true; return }
+                        let matchingYear = component(.year, from: matchingDate)
 
-                if let dateInSameYear = dateInSameYear {
-                    return dateInSameYear
-                }
+                        if matchingYear == year {
+                            result.append(matchingDate)
+                        }
 
-                // Check next date based on frequency
-                guard let afterDate = self.date(byAdding: .year, value: frequency, to: startOfYear(for: date)) else {
-                    return nil
-                }
+                        stop = true
+                    }
 
-                return months.compactMap {
-                    var dateComponents = dateComponents([.hour, .minute, .second], from: date)
-                    dateComponents.month = $0
-                    dateComponents.day = day
-                    return nextDate(
-                        after: afterDate,
-                        matching: dateComponents,
-                        matchingPolicy: .nextTime,
+                    var afterDateComponents = self.dateComponents([.hour, .minute, .second], from: afterDate)
+                    afterDateComponents.month = month
+                    afterDateComponents.day = day
+
+                    enumerateDates(
+                        startingAfter: startOfYear(for: afterDate),
+                        matching: afterDateComponents,
+                        matchingPolicy: .strict,
                         repeatedTimePolicy: .first,
                         direction: .forward
-                    )
-                }.sorted().first
+                    ) { matchingDate, _, stop in
+                        guard let matchingDate = matchingDate else { stop = true; return }
+                        result.append(matchingDate)
+                        stop = true
+                    }
+                }
+
+                return result.sorted().first
 
             case let .daysOfWeek(months, weekdayOrdinal, weekday):
                 guard !months.isEmpty, months.allSatisfy({ 1 <= $0 && $0 <= 12 }) else {
                     return nil
                 }
 
-                // Check date in the same year
-                let dateInSameYear: Date? = months.compactMap {
+                var result = [Date]()
+                let year = component(.year, from: date)
+                let afterDate = self.date(byAdding: .year, value: frequency, to: date) ?? date
+
+                for month in months {
                     var dateComponents = dateComponents([.hour, .minute, .second], from: date)
-                    dateComponents.year = component(.year, from: date)
-                    dateComponents.month = $0
+                    dateComponents.weekOfMonth = weekdayOrdinal.rawValue
                     dateComponents.weekday = weekday.rawValue
-                    dateComponents.weekdayOrdinal = weekdayOrdinal.rawValue
-                    return nextDate(
-                        after: date,
+                    dateComponents.month = month
+
+                    enumerateDates(
+                        startingAfter: date,
                         matching: dateComponents,
-                        matchingPolicy: .nextTime,
+                        matchingPolicy: .strict,
                         repeatedTimePolicy: .first,
                         direction: .forward
-                    )
-                }.sorted().first
+                    ) { matchingDate, _, stop in
+                        guard let matchingDate = matchingDate else { stop = true; return }
+                        let matchingYear = component(.year, from: matchingDate)
 
-                if let dateInSameYear = dateInSameYear {
-                    return dateInSameYear
-                }
+                        if matchingYear == year {
+                            result.append(matchingDate)
+                        }
 
-                // Check next date based on frequency
-                guard let afterDate = self.date(byAdding: .year, value: frequency, to: startOfYear(for: date)) else {
-                    return nil
-                }
+                        stop = true
+                    }
 
-                return months.compactMap {
-                    var dateComponents = dateComponents([.hour, .minute, .second], from: date)
-                    dateComponents.month = $0
-                    dateComponents.weekday = weekday.rawValue
-                    dateComponents.weekdayOrdinal = weekdayOrdinal.rawValue
-                    return nextDate(
-                        after: afterDate,
-                        matching: dateComponents,
-                        matchingPolicy: .nextTime,
+                    var afterDateComponents = self.dateComponents([.hour, .minute, .second], from: afterDate)
+                    afterDateComponents.weekOfMonth = weekdayOrdinal.rawValue
+                    afterDateComponents.weekday = weekday.rawValue
+                    afterDateComponents.month = month
+
+                    enumerateDates(
+                        startingAfter: startOfYear(for: afterDate),
+                        matching: afterDateComponents,
+                        matchingPolicy: .strict,
                         repeatedTimePolicy: .first,
                         direction: .forward
-                    )
-                }.sorted().first
+                    ) { matchingDate, _, stop in
+                        guard let matchingDate = matchingDate else { stop = true; return }
+                        result.append(matchingDate)
+                        stop = true
+                    }
+
+                }
+
+                return result.sorted().first
             }
         }
     }

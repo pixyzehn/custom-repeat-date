@@ -95,6 +95,11 @@ struct CustomRepeatDateView: View {
     var body: some View {
         NavigationView {
             List {
+                Section {
+                    NavigationLink(destination: DemoView(option: $option)) {
+                        Text("Demo")
+                    }
+                }
                 Section(footer:
                     Text(option.name)
                         .fixedSize(horizontal: false, vertical: true) // Prevent text from truncating in some cases

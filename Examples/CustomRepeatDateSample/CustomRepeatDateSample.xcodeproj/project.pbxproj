@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		F50DC1BF285758BF00689566 /* DemoView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F50DC1BE285758BF00689566 /* DemoView.swift */; };
 		F572E1F42847811600FC992D /* CustomRepeatDateSampleApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = F572E1F32847811600FC992D /* CustomRepeatDateSampleApp.swift */; };
 		F572E1F62847811600FC992D /* CustomRepeatDateView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F572E1F52847811600FC992D /* CustomRepeatDateView.swift */; };
 		F572E1F82847811700FC992D /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = F572E1F72847811700FC992D /* Assets.xcassets */; };
@@ -20,6 +21,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		F50DC1BE285758BF00689566 /* DemoView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DemoView.swift; sourceTree = "<group>"; };
 		F572E1F02847811600FC992D /* CustomRepeatDateSample.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = CustomRepeatDateSample.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		F572E1F32847811600FC992D /* CustomRepeatDateSampleApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomRepeatDateSampleApp.swift; sourceTree = "<group>"; };
 		F572E1F52847811600FC992D /* CustomRepeatDateView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomRepeatDateView.swift; sourceTree = "<group>"; };
@@ -90,6 +92,7 @@
 			isa = PBXGroup;
 			children = (
 				F572E1F52847811600FC992D /* CustomRepeatDateView.swift */,
+				F50DC1BE285758BF00689566 /* DemoView.swift */,
 				F572E2042847819600FC992D /* PickerView.swift */,
 			);
 			path = Views;
@@ -212,6 +215,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				F572E20E2847821400FC992D /* Weekday+Extension.swift in Sources */,
+				F50DC1BF285758BF00689566 /* DemoView.swift in Sources */,
 				F572E209284781D400FC992D /* Frequency.swift in Sources */,
 				F572E2102847822D00FC992D /* WeekdayOrdinal+Extension.swift in Sources */,
 				F572E1F62847811600FC992D /* CustomRepeatDateView.swift in Sources */,

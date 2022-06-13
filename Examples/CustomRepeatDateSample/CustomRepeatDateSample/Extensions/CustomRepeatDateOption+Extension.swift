@@ -20,7 +20,7 @@ extension CustomRepeatDateOption {
                 result += "Repeat every \(frequency) weeks"
             }
 
-            result += " on \(ListFormatter.localizedString(byJoining: weekdays.map { $0.name }))"
+            result += " on \(ListFormatter.localizedString(byJoining: weekdays.map(\.name)))"
             return result
 
         case let .monthly(frequency: frequency, option: option):

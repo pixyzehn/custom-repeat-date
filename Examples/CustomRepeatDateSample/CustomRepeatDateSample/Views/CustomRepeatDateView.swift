@@ -30,8 +30,8 @@ struct CustomRepeatDateView: View {
     @State var selectedDaysOfWeekInYearly: [Int] = [0, 0]
 
     let allDaysOfWeek: [[String]] = [
-        WeekdayOrdinal.allCases.map { $0.name },
-        Weekday.allCases.map { $0.name },
+        WeekdayOrdinal.allCases.map(\.name),
+        Weekday.allCases.map(\.name),
     ]
     let allFrequencies = Frequency.allCases
 

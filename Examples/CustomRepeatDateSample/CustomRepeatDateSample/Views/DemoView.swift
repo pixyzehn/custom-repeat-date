@@ -3,8 +3,8 @@ import SwiftUI
 
 struct DemoView: View {
     @Binding var option: CustomRepeatDateOption
-    @State private var startDate = Date()
-    @State private var result = [Date]()
+    @State var startDate = Date()
+    @State var result = [Date]()
     let calendar = Calendar(identifier: .gregorian)
     let numberOfGeneratedItems = 30
 

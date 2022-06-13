@@ -4,7 +4,7 @@ import SwiftUI
 struct CustomRepeatDateSampleApp: App {
     var body: some Scene {
         WindowGroup {
-            CustomRepeatDateView(date: .constant(Date()))
+            CustomRepeatDateView()
         }
     }
 }

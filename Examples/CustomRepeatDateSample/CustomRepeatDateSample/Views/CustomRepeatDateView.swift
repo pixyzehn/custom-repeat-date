@@ -2,7 +2,6 @@ import CustomRepeatDate
 import SwiftUI
 
 struct CustomRepeatDateView: View {
-    @Binding var date: Date
     @State var option: CustomRepeatDateOption = .daily(frequency: 1)
 
     @State var isFrequencySelection = false
@@ -62,8 +61,7 @@ struct CustomRepeatDateView: View {
                 let weekday = Weekday(rawValue: selectedDaysOfWeekInYearly[1] + 1) ?? .sunday
                 option = .yearly(frequency: frequency, option: .daysOfWeek(months: months, weekdayOrdinal: weekdayOrdinal, weekday: weekday))
             } else {
-                let day = Calendar.current.component(.day, from: date)
-                option = .yearly(frequency: frequency, option: .daysOfYear(months: months, day: day))
+                option = .yearly(frequency: frequency, option: .daysOfYear(months: months))
             }
         }
     }

@@ -56,7 +56,7 @@ extension CustomRepeatDateOption {
             }
 
             switch option {
-            case let .daysOfYear(months, _):
+            case let .daysOfYear(months):
                 let monthNames = months.map { DateFormatter().monthSymbols[$0 - 1] }
                 result += " in \(ListFormatter.localizedString(byJoining: monthNames))"
                 return result

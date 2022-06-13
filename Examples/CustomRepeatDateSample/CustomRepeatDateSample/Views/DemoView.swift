@@ -11,7 +11,7 @@ struct DemoView: View {
     func generate() {
         var result = [Date]()
         var date = startDate
-        for _ in 0..<numberOfGeneratedItems {
+        for _ in 0 ..< numberOfGeneratedItems {
             if let newDate = calendar.nextDate(after: date, option: option) {
                 result.append(newDate)
                 date = newDate
@@ -29,7 +29,7 @@ struct DemoView: View {
                 DatePicker("Start Date", selection: $startDate)
             }
             Section {
-                ForEach(0..<result.count, id: \.self) { i in
+                ForEach(0 ..< result.count, id: \.self) { i in
                     HStack {
                         Text("\(i + 1)")
                         Spacer()

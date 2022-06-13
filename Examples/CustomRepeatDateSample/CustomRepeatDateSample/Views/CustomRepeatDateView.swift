@@ -299,5 +299,6 @@ struct CustomRepeatDateView: View {
                 }
             }
         }
+        .navigationViewStyle(.stack)
     }
 }

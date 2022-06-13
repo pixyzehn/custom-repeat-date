@@ -19,7 +19,7 @@ public enum CustomRepeatDateOption: Codable {
 
     public enum YearlyOption: Codable {
         /// Days of a year in specified months, such as on the 25th and 31st of April and August.
-        case daysOfYear(months: [Int], day: Int)
+        case daysOfYear(months: [Int])
         /// Days of a  week in specified months, such as on the 3rd Tuesday of April and Auguest.
         case daysOfWeek(months: [Int], weekdayOrdinal: WeekdayOrdinal, weekday: Weekday)
     }

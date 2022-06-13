@@ -174,13 +174,14 @@ public extension Calendar {
             }
 
             switch option {
-            case let .daysOfYear(months, day):
-                guard !months.isEmpty, months.allSatisfy({ $0 >= 1 && $0 <= 12 }), day >= 1, day <= 31 else {
+            case let .daysOfYear(months):
+                guard !months.isEmpty, months.allSatisfy({ $0 >= 1 && $0 <= 12 }) else {
                     return nil
                 }
 
                 var result = [Date]()
                 let year = component(.year, from: date)
+                let day = component(.day, from: date)
                 let afterDate = self.date(byAdding: .year, value: frequency, to: date) ?? date
 
                 for month in months {

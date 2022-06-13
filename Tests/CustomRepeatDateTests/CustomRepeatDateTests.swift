@@ -181,9 +181,9 @@ final class CustomRepeatDateTests: XCTestCase {
     }
 
     func testYearlyCustomRepeatDateDaysOfYear() {
-        let option = CustomRepeatDateOption.yearly(frequency: 3, option: .daysOfYear(months: [1, 4], day: 12))
+        let option = CustomRepeatDateOption.yearly(frequency: 3, option: .daysOfYear(months: [1, 4]))
 
-        let repeat1 = calendar.nextDate(after: date(year: 2022, month: 5, day: 5), option: option)!
+        let repeat1 = calendar.nextDate(after: date(year: 2022, month: 5, day: 12), option: option)!
         let repeat2 = calendar.nextDate(after: repeat1, option: option)!
         let repeat3 = calendar.nextDate(after: repeat2, option: option)!
         let repeat4 = calendar.nextDate(after: repeat3, option: option)!
@@ -198,9 +198,9 @@ final class CustomRepeatDateTests: XCTestCase {
         // Edge cases
         do {
             // Skip cases where there is no 31th
-            let option = CustomRepeatDateOption.yearly(frequency: 3, option: .daysOfYear(months: [1, 4], day: 31))
+            let option = CustomRepeatDateOption.yearly(frequency: 3, option: .daysOfYear(months: [1, 4]))
 
-            let repeat1 = calendar.nextDate(after: date(year: 2022, month: 5, day: 5), option: option)!
+            let repeat1 = calendar.nextDate(after: date(year: 2022, month: 5, day: 31), option: option)!
             let repeat2 = calendar.nextDate(after: repeat1, option: option)!
             let repeat3 = calendar.nextDate(after: repeat2, option: option)!
             let repeat4 = calendar.nextDate(after: repeat3, option: option)!
@@ -215,9 +215,9 @@ final class CustomRepeatDateTests: XCTestCase {
 
         do {
             // Maximum frequency
-            let option = CustomRepeatDateOption.yearly(frequency: 999, option: .daysOfYear(months: [1, 4], day: 10))
+            let option = CustomRepeatDateOption.yearly(frequency: 999, option: .daysOfYear(months: [1, 4]))
 
-            let repeat1 = calendar.nextDate(after: date(year: 2022, month: 5, day: 5), option: option)!
+            let repeat1 = calendar.nextDate(after: date(year: 2022, month: 5, day: 10), option: option)!
             let repeat2 = calendar.nextDate(after: repeat1, option: option)!
             let repeat3 = calendar.nextDate(after: repeat2, option: option)!
             let repeat4 = calendar.nextDate(after: repeat3, option: option)!

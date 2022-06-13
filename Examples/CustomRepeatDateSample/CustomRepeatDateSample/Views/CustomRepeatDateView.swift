@@ -251,7 +251,7 @@ struct CustomRepeatDateView: View {
                                         .frame(height: 50)
                                         .foregroundColor(selectedMonthsOfYear.contains(index) ? .blue : Color(uiColor: .secondarySystemGroupedBackground))
                                         .aspectRatio(1, contentMode: .fill)
-                                    Text(DateFormatter().monthSymbols[index - 1])
+                                    Text(DateFormatter().shortMonthSymbols[index - 1])
                                         .foregroundColor(.primary)
                                 }
                                 .frame(maxWidth: .infinity)

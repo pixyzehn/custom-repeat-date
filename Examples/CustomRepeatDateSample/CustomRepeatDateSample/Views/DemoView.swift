@@ -23,6 +23,11 @@ struct DemoView: View {
         }
     }
 
+    func shortWeekdaySymbol(date: Date) -> String {
+        let rawValue = calendar.component(.weekday, from: date)
+        return calendar.shortWeekdaySymbols[rawValue - 1]
+    }
+
     var body: some View {
         List {
             Section {
@@ -34,7 +39,9 @@ struct DemoView: View {
                         Text("\(i + 1)")
                         Spacer()
                         Text(result[i].formatted(date: .long, time: .shortened))
+                        Text(shortWeekdaySymbol(date: result[i]))
                     }
+                    .font(.system(.caption2, design: .monospaced))
                 }
             }
         }

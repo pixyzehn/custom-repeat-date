@@ -238,7 +238,7 @@ public extension Calendar {
 
                 for month in months.sorted() {
                     var dateComponents = dateComponents([.hour, .minute, .second], from: date)
-                    dateComponents.weekOfMonth = weekdayOrdinal.rawValue
+                    dateComponents.weekdayOrdinal = weekdayOrdinal.rawValue
                     dateComponents.weekday = weekday.rawValue
                     dateComponents.month = month
 
@@ -258,7 +258,7 @@ public extension Calendar {
                     }
 
                     var afterDateComponents = self.dateComponents([.hour, .minute, .second], from: afterDate)
-                    afterDateComponents.weekOfMonth = weekdayOrdinal.rawValue
+                    afterDateComponents.weekdayOrdinal = weekdayOrdinal.rawValue
                     afterDateComponents.weekday = weekday.rawValue
                     afterDateComponents.month = month
 

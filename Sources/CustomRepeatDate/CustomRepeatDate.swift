@@ -28,7 +28,7 @@ public extension Calendar {
             let weekOfYear = component(.weekOfYear, from: date)
             let afterDate = self.date(byAdding: .weekOfYear, value: frequency, to: date) ?? date
 
-            for weekday in weekdays {
+            for weekday in weekdays.sorted() {
                 var dateComponents = dateComponents([.hour, .minute, .second], from: date)
                 dateComponents.weekday = weekday.rawValue
 
@@ -78,7 +78,7 @@ public extension Calendar {
                 let month = component(.month, from: date)
                 var afterDate = self.date(byAdding: .month, value: frequency, to: date) ?? date
 
-                for day in days {
+                for day in days.sorted() {
                     var dateComponents = dateComponents([.hour, .minute, .second], from: date)
                     dateComponents.day = day
 
@@ -185,7 +185,7 @@ public extension Calendar {
                 let day = component(.day, from: date)
                 let afterDate = self.date(byAdding: .year, value: frequency, to: date) ?? date
 
-                for month in months {
+                for month in months.sorted() {
                     var dateComponents = dateComponents([.hour, .minute, .second], from: date)
                     dateComponents.month = month
                     dateComponents.day = day
@@ -233,7 +233,7 @@ public extension Calendar {
                 let year = component(.year, from: date)
                 let afterDate = self.date(byAdding: .year, value: frequency, to: date) ?? date
 
-                for month in months {
+                for month in months.sorted() {
                     var dateComponents = dateComponents([.hour, .minute, .second], from: date)
                     dateComponents.weekOfMonth = weekdayOrdinal.rawValue
                     dateComponents.weekday = weekday.rawValue

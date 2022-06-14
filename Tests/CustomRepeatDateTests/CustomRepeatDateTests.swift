@@ -111,6 +111,19 @@ final class CustomRepeatDateTests: XCTestCase {
         }
 
         do {
+            // 1st
+            let option = CustomRepeatDateOption.monthly(frequency: 2, option: .daysOfMonth(days: [1, 5]))
+
+            let repeat1 = calendar.nextDate(after: date(year: 2022, month: 5, day: 5), option: option)!
+            let repeat2 = calendar.nextDate(after: repeat1, option: option)!
+            let repeat3 = calendar.nextDate(after: repeat2, option: option)!
+
+            XCTAssertEqual(repeat1, date(year: 2022, month: 7, day: 1))
+            XCTAssertEqual(repeat2, date(year: 2022, month: 7, day: 5))
+            XCTAssertEqual(repeat3, date(year: 2022, month: 9, day: 1))
+        }
+
+        do {
             // Maximum frequency
             let option = CustomRepeatDateOption.monthly(frequency: 999, option: .daysOfMonth(days: [5]))
 

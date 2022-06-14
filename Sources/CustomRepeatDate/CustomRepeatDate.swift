@@ -108,8 +108,9 @@ public extension Calendar {
                         maxDay = range(of: .day, in: .month, for: afterDate)?.count ?? 0
                     }
 
+                    // Set the start of the day to be able to check the 1st on each month
                     enumerateDates(
-                        startingAfter: startOfMonth(for: afterDate),
+                        startingAfter: startOfDay(for: startOfMonth(for: afterDate)),
                         matching: afterDateComponents,
                         matchingPolicy: .strict,
                         repeatedTimePolicy: .first,

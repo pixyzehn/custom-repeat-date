@@ -69,6 +69,18 @@ final class CustomRepeatDateTests: XCTestCase {
         }
 
         do {
+            // Multiple weekdays
+            let option = CustomRepeatDateOption.weekly(frequency: 2, weekdays: [.sunday, .monday])
+            let repeat1 = calendar.nextDate(after: date(year: 2022, month: 5, day: 5), option: option)!
+            let repeat2 = calendar.nextDate(after: repeat1, option: option)!
+            let repeat3 = calendar.nextDate(after: repeat2, option: option)!
+
+            XCTAssertEqual(repeat1, date(year: 2022, month: 5, day: 8))
+            XCTAssertEqual(repeat2, date(year: 2022, month: 5, day: 16))
+            XCTAssertEqual(repeat3, date(year: 2022, month: 5, day: 22))
+        }
+
+        do {
             // Maximum frequency
             let option = CustomRepeatDateOption.weekly(frequency: 999, weekdays: [.sunday])
             let repeat1 = calendar.nextDate(after: date(year: 2022, month: 12, day: 18), option: option)!

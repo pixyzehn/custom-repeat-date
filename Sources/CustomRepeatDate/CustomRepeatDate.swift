@@ -47,9 +47,12 @@ public extension Calendar {
                     stop = true
                 }
 
+                var afterDateComponents = self.dateComponents([.hour, .minute, .second], from: afterDate)
+                afterDateComponents.weekday = weekday.rawValue
+
                 enumerateDates(
-                    startingAfter: startOfDay(for: afterDate),
-                    matching: dateComponents,
+                    startingAfter: startOfDay(for: startOfWeek(for: afterDate)),
+                    matching: afterDateComponents,
                     matchingPolicy: .strict,
                     repeatedTimePolicy: .first,
                     direction: .forward

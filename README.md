@@ -15,6 +15,8 @@ let repeat4 = calendar.nextDate(after: repeat3, option: option)!   // 2023-02-14
 let repeat5 = calendar.nextDate(after: repeat4, option: option)!   // 2023-05-09 22:22:22 +0000
 ```
 
+To see how it works in practice, check out [Examples](./Examples).
+
 ## Converting Documentation
 
 ```shell

@@ -8,19 +8,19 @@ enum Frequency: CaseIterable {
 
     var name: String {
         switch self {
-        case .daily: return "Daily"
-        case .weekly: return "Weekly"
-        case .monthly: return "Monthly"
-        case .yearly: return "Yearly"
+        case .daily: return NSLocalizedString("daily", comment: "")
+        case .weekly: return NSLocalizedString("weekly", comment: "")
+        case .monthly: return NSLocalizedString("monthly", comment: "")
+        case .yearly: return NSLocalizedString("yearly", comment: "")
         }
     }
 
     func everyName(count: Int) -> String {
         switch self {
-        case .daily: return count > 1 ? "\(count) days" : "Day"
-        case .weekly: return count > 1 ? "\(count) weeks" : "Week"
-        case .monthly: return count > 1 ? "\(count) months" : "Month"
-        case .yearly: return count > 1 ? "\(count) years" : "Year"
+        case .daily: return String(format: NSLocalizedString("every_name_daily", comment: ""), count)
+        case .weekly: return String(format: NSLocalizedString("every_name_weekly", comment: ""), count)
+        case .monthly: return String(format: NSLocalizedString("every_name_monthly", comment: ""), count)
+        case .yearly: return String(format: NSLocalizedString("every_name_yearly", comment: ""), count)
         }
     }
 }

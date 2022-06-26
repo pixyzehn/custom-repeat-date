@@ -95,7 +95,7 @@ struct CustomRepeatDateView: View {
             List {
                 Section {
                     NavigationLink(destination: DemoView(option: $option)) {
-                        Text("Demo")
+                        Text("demo")
                     }
                 }
                 Section(footer:
@@ -108,7 +108,7 @@ struct CustomRepeatDateView: View {
                         }
                     }) {
                         HStack {
-                            Text("Frequency")
+                            Text("frequency")
                                 .foregroundColor(.primary)
                             Spacer()
                             Text(selectedFrequency.name)
@@ -132,7 +132,7 @@ struct CustomRepeatDateView: View {
                         }
                     }) {
                         HStack {
-                            Text("Every")
+                            Text("every")
                                 .foregroundColor(.primary)
                             Spacer()
                             Text(selectedFrequency.everyName(count: selectedEvery))
@@ -181,7 +181,7 @@ struct CustomRepeatDateView: View {
                             updateOption()
                         }) {
                             HStack {
-                                Text("Each")
+                                Text("each")
                                     .foregroundColor(.primary)
                                 Spacer()
                                 if selectedMonthlyType == .daysOfMonth {
@@ -194,7 +194,7 @@ struct CustomRepeatDateView: View {
                             updateOption()
                         }) {
                             HStack {
-                                Text("On the...")
+                                Text("on_the")
                                     .foregroundColor(.primary)
                                 Spacer()
                                 if selectedMonthlyType == .daysOfWeek {
@@ -273,7 +273,7 @@ struct CustomRepeatDateView: View {
                 }
                 if selectedFrequency == .yearly {
                     Section {
-                        Toggle("Days of Week", isOn: $isDaysOfWeekEnabled)
+                        Toggle("days_of_week", isOn: $isDaysOfWeekEnabled)
                             .onChange(of: isDaysOfWeekEnabled) { _ in
                                 updateOption()
                             }
@@ -287,14 +287,14 @@ struct CustomRepeatDateView: View {
                 }
             }
             .listStyle(.insetGrouped)
-            .navigationTitle("Custom")
+            .navigationTitle("custom")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .navigationBarTrailing) {
                     Button(action: {
                         reset()
                     }) {
-                        Text("Reset")
+                        Text("reset")
                     }
                 }
             }

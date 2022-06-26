@@ -1,0 +1,65 @@
+
+// Demo
+"demo" = "Demo";
+"generate" = "Generate";
+"start_date" = "Start Date";
+"reset" = "Reset";
+
+// Note: the following strings are mostly from RemindersUICore.framework and RemindersKit.framework
+// used in the Apple Reminders app, and extracted by Apple Localization Terms Glossary.
+// ref: https://applelocalization.com
+
+// Core
+"custom" = "Custom";
+"frequency" = "Frequency";
+"every" = "Every";
+"each" = "Each";
+"on_the" = "On the...";
+"days_of_week" = "Days of Week";
+
+// Frequency
+"daily" = "Daily";
+"weekly" = "Weekly";
+"monthly" = "Monthly";
+"yearly" = "Yearly";
+
+// Weekday Ordinal
+"first" = "first";
+"second" = "second";
+"third" = "third";
+"fourth" = "fourth";
+"fifth" = "fifth";
+
+// Daily
+"event_every_day" = "Event will occur every day.";
+/* E.g., Event will occur every 2 days. */
+"event_every_x_days" = "Event will occur every %@ days.";
+
+// Weekly
+/* E.g., Event will occur every week on Sunday. */
+"event_every_week_on" = "Event will occur every week on %@.";
+/* E.g., Event will occur every 2 weeks on Sunday. */
+"event_every_x_weeks_on" = "Event will occur every %1$@ weeks on %2$@.";
+
+// Monthly
+"event_every_month" = "Event will occur every month.";
+/* E.g., Event will occur every 2 months. */
+"event_every_x_months" = "Event will occur every %@ months.";
+/* E.g., Event will occur every month on 1st and 3rd. */
+"event_every_month_on" = "Event will occur every month on %@.";
+/* E.g., Event will occur every 2 months on 1st and 3rd. */
+"event_every_x_months_on" = "Event will occur every %1$@ months on %2$@.";
+/* E.g., Event will occur every month on the second Monday. */
+"event_every_month_on_the" = "Event will occur every month on the %1$@ %2$@.";
+/* E.g., Event will occur every 2 months on the second Monday. */
+"event_every_x_months_on_the" = "Event will occur every %1$@ months on the %2$@ %3$@.";
+
+// Yearly
+/* E.g., Event will occur every year in January. */
+"evnet_every_year_in" = "Event will occur every year in %@.";
+/* E.g., Event will occur every 2 years in January. */
+"evnet_every_x_years_in" = "Event will occur every %1$@ years in %2$@.";
+/* E.g., Event will occur every year on the second Monday of January. */
+"evnet_every_year_on" = "Event will occur every year on the %1$@ %2$@ of %3$@.";
+/* E.g., Event will occur every 2 years on the second Monday of January. */
+"evnet_every_x_years_on" = "Event will occur every %1$@ years on the %2$@ %3$@ of %4$@.";

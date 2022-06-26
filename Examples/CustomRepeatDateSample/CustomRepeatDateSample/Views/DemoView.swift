@@ -31,7 +31,7 @@ struct DemoView: View {
     var body: some View {
         List {
             Section {
-                DatePicker("Start Date", selection: $startDate)
+                DatePicker("start_date", selection: $startDate)
             }
             Section {
                 ForEach(0 ..< result.count, id: \.self) { i in
@@ -46,14 +46,14 @@ struct DemoView: View {
             }
         }
         .listStyle(.insetGrouped)
-        .navigationTitle("Demo")
+        .navigationTitle("demo")
         .navigationBarTitleDisplayMode(.inline)
         .toolbar {
             ToolbarItem(placement: .navigationBarTrailing) {
                 Button(action: {
                     generate()
                 }) {
-                    Text("Generate")
+                    Text("generate")
                 }
             }
         }

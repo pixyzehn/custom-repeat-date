@@ -6,84 +6,75 @@ extension CustomRepeatDateOption {
         switch self {
         case let .daily(frequency):
             if frequency == 1 {
-                return "Repeat every day"
+                return NSLocalizedString("event_every_day", comment: "")
             } else {
-                return "Repeat every \(frequency) days"
+                return String(format: NSLocalizedString("event_every_x_days", comment: ""), "\(frequency)")
             }
 
         case let .weekly(frequency: frequency, weekdays: weekdays):
-            var result = ""
+            let weekdaysList = ListFormatter.localizedString(byJoining: weekdays.map(\.name))
 
             if frequency == 1 {
-                result += "Repeat every week"
+                return String(format: NSLocalizedString("event_every_week_on", comment: ""), weekdaysList)
             } else {
-                result += "Repeat every \(frequency) weeks"
+                return String(format: NSLocalizedString("event_every_x_weeks_on", comment: ""), "\(frequency)", weekdays)
             }
-
-            result += " on \(ListFormatter.localizedString(byJoining: weekdays.map(\.name)))"
-            return result
 
         case let .monthly(frequency: frequency, option: option):
-            var result = ""
-
-            if frequency == 1 {
-                result += "Repeat every month"
-            } else {
-                result += "Repeat every \(frequency) months"
-            }
-
             switch option {
             case let .daysOfMonth(days):
                 if days.count == 1 {
-                    return result
+                    if frequency == 1 {
+                        return NSLocalizedString("event_every_month", comment: "")
+                    } else {
+                        return String(format: NSLocalizedString("event_every_x_months", comment: ""), "\(frequency)")
+                    }
                 } else {
-                    let dayNames = days.map { "\($0)\(daySuffix(day: $0))" }
-                    result += " on \(ListFormatter.localizedString(byJoining: dayNames))"
-                    return result
+                    let dayNames = days.map { daySuffix(day: $0) }
+                    let dayNamesList = ListFormatter.localizedString(byJoining: dayNames)
+
+                    if frequency == 1 {
+                        return String(format: NSLocalizedString("event_every_month_on", comment: ""), dayNamesList)
+                    } else {
+                        return String(format: NSLocalizedString("event_every_x_months_on", comment: ""), "\(frequency)", dayNamesList)
+                    }
                 }
             case let .daysOfWeek(weekdayOrdinal, weekday):
-                result += " on the \(weekdayOrdinal.name) \(weekday.name)"
-                return result
+                if frequency == 1 {
+                    return String(format: NSLocalizedString("event_every_month_on_the", comment: ""), weekdayOrdinal.name, weekday.name)
+                } else {
+                    return String(format: NSLocalizedString("event_every_x_months_on_the", comment: ""), "\(frequency)", weekdayOrdinal.name, weekday.name)
+                }
             }
 
         case let .yearly(frequency: frequency, option: option):
-            var result = ""
-
-            if frequency == 1 {
-                result += "Repeat every year"
-            } else {
-                result += "Repeat every \(frequency) years"
-            }
-
             switch option {
             case let .daysOfYear(months):
                 let monthNames = months.map { DateFormatter().monthSymbols[$0 - 1] }
-                result += " in \(ListFormatter.localizedString(byJoining: monthNames))"
-                return result
+                let monthNamesList = ListFormatter.localizedString(byJoining: monthNames)
+
+                if frequency == 1 {
+                    return String(format: NSLocalizedString("evnet_every_year_in", comment: ""), monthNamesList)
+                } else {
+                    return String(format: NSLocalizedString("evnet_every_x_years_in", comment: ""), "\(frequency)", monthNamesList)
+                }
             case let .daysOfWeek(months, weekdayOrdinal, weekday):
                 let monthNames = months.map { DateFormatter().monthSymbols[$0 - 1] }
-                result += " on the \(weekdayOrdinal.name) \(weekday.name)"
-                result += " of \(ListFormatter.localizedString(byJoining: monthNames))"
-                return result
+                let monthNamesList = ListFormatter.localizedString(byJoining: monthNames)
+
+                if frequency == 1 {
+                    return String(format: NSLocalizedString("evnet_every_year_on", comment: ""), weekdayOrdinal.name, weekday.name, monthNamesList)
+                } else {
+                    return String(format: NSLocalizedString("evnet_every_x_years_on", comment: ""), "\(frequency)", weekdayOrdinal.name, weekday.name, monthNamesList)
+                }
             }
         }
     }
 
     private func daySuffix(day: Int) -> String {
-        switch day {
-        case 11 ... 13:
-            return "th"
-        default:
-            switch day % 10 {
-            case 1:
-                return "st"
-            case 2:
-                return "nd"
-            case 3:
-                return "rd"
-            default:
-                return "th"
-            }
-        }
+        let numberFormatter = NumberFormatter()
+        numberFormatter.numberStyle = .ordinal
+        numberFormatter.locale = Locale.current
+        return numberFormatter.string(for: day)!
     }
 }

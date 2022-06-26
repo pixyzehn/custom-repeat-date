@@ -17,6 +17,8 @@
 		F572E20E2847821400FC992D /* Weekday+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = F572E20D2847821400FC992D /* Weekday+Extension.swift */; };
 		F572E2102847822D00FC992D /* WeekdayOrdinal+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = F572E20F2847822D00FC992D /* WeekdayOrdinal+Extension.swift */; };
 		F572E212284789DB00FC992D /* CustomRepeatDateOption+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = F572E211284789DB00FC992D /* CustomRepeatDateOption+Extension.swift */; };
+		F58BAA3F286892EA007F6D20 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = F58BAA41286892EA007F6D20 /* Localizable.strings */; };
+		F58BAA452868951A007F6D20 /* Localizable.stringsdict in Resources */ = {isa = PBXBuildFile; fileRef = F58BAA442868951A007F6D20 /* Localizable.stringsdict */; };
 		F5D5CC8E284CC5A3004156D9 /* CustomRepeatDate in Frameworks */ = {isa = PBXBuildFile; productRef = F5D5CC8D284CC5A3004156D9 /* CustomRepeatDate */; };
 /* End PBXBuildFile section */
 
@@ -33,6 +35,8 @@
 		F572E20F2847822D00FC992D /* WeekdayOrdinal+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "WeekdayOrdinal+Extension.swift"; sourceTree = "<group>"; };
 		F572E211284789DB00FC992D /* CustomRepeatDateOption+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CustomRepeatDateOption+Extension.swift"; sourceTree = "<group>"; };
 		F572E2132848242400FC992D /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
+		F58BAA40286892EA007F6D20 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Localizable.strings; sourceTree = "<group>"; };
+		F58BAA442868951A007F6D20 /* Localizable.stringsdict */ = {isa = PBXFileReference; lastKnownFileType = text.plist.stringsdict; path = Localizable.stringsdict; sourceTree = "<group>"; };
 		F5D5CC8C284CC556004156D9 /* custom-repeat-date */ = {isa = PBXFileReference; lastKnownFileType = wrapper; name = "custom-repeat-date"; path = ../..; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -135,6 +139,8 @@
 			isa = PBXGroup;
 			children = (
 				F572E1F72847811700FC992D /* Assets.xcassets */,
+				F58BAA41286892EA007F6D20 /* Localizable.strings */,
+				F58BAA442868951A007F6D20 /* Localizable.stringsdict */,
 			);
 			path = Resources;
 			sourceTree = "<group>";
@@ -203,6 +209,8 @@
 			buildActionMask = 2147483647;
 			files = (
 				F572E1FB2847811700FC992D /* Preview Assets.xcassets in Resources */,
+				F58BAA452868951A007F6D20 /* Localizable.stringsdict in Resources */,
+				F58BAA3F286892EA007F6D20 /* Localizable.strings in Resources */,
 				F572E1F82847811700FC992D /* Assets.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -227,11 +235,23 @@
 		};
 /* End PBXSourcesBuildPhase section */
 
+/* Begin PBXVariantGroup section */
+		F58BAA41286892EA007F6D20 /* Localizable.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				F58BAA40286892EA007F6D20 /* en */,
+			);
+			name = Localizable.strings;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
+
 /* Begin XCBuildConfiguration section */
 		F572E1FC2847811700FC992D /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++17";
@@ -292,6 +312,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++17";

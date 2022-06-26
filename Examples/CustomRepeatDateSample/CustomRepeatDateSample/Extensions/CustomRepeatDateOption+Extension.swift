@@ -17,7 +17,7 @@ extension CustomRepeatDateOption {
             if frequency == 1 {
                 return String(format: NSLocalizedString("event_every_week_on", comment: ""), weekdaysList)
             } else {
-                return String(format: NSLocalizedString("event_every_x_weeks_on", comment: ""), "\(frequency)", weekdays)
+                return String(format: NSLocalizedString("event_every_x_weeks_on", comment: ""), "\(frequency)", weekdaysList)
             }
 
         case let .monthly(frequency: frequency, option: option):

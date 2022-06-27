@@ -1,4 +1,8 @@
-# custom-repeat-date [![CI](https://github.com/pixyzehn/custom-repeat-date/actions/workflows/ci.yml/badge.svg)](https://github.com/pixyzehn/custom-repeat-date/actions/workflows/ci.yml)
+# custom-repeat-date
+
+[![CI](https://github.com/pixyzehn/custom-repeat-date/actions/workflows/ci.yml/badge.svg)](https://github.com/pixyzehn/custom-repeat-date/actions/workflows/ci.yml)
+[![](https://img.shields.io/endpoint?url=https%3A%2F%2Fswiftpackageindex.com%2Fapi%2Fpackages%2Fpixyzehn%2Fcustom-repeat-date%2Fbadge%3Ftype%3Dswift-versions)](https://swiftpackageindex.com/pixyzehn/custom-repeat-date)
+[![](https://img.shields.io/endpoint?url=https%3A%2F%2Fswiftpackageindex.com%2Fapi%2Fpackages%2Fpixyzehn%2Fcustom-repeat-date%2Fbadge%3Ftype%3Dplatforms)](https://swiftpackageindex.com/pixyzehn/custom-repeat-date)
 
 A simple date extension that easily allows you to provide custom repeat date options for the Gregorian calendar. The package has been created and used for [Expenses.app](https://getexpenses.app), inspired by [Apple Reminders](https://apps.apple.com/us/app/reminders/id1108187841) and [Bluebird](https://bluebird.app).
 

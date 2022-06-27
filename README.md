@@ -17,6 +17,10 @@ let repeat5 = calendar.nextDate(after: repeat4, option: option)!   // 2023-05-09
 
 To see how it works in practice, check out [Examples](./Examples).
 
+ex. 1 | ex. 2
+---- | ----
+<img src="./Examples/image-1.png" width="320"/> | <img src="./Examples/image-2.png" width="320"/>
+
 ## Converting Documentation
 
 ```shell

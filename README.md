@@ -1,6 +1,6 @@
 # custom-repeat-date [![CI](https://github.com/pixyzehn/custom-repeat-date/actions/workflows/ci.yml/badge.svg)](https://github.com/pixyzehn/custom-repeat-date/actions/workflows/ci.yml)
 
-A simple date extension that easily allows you to provide custom repeat date options for the Gregorian calendar. The package has been created and used for [Expenses.app](https://getexpenses.app).
+A simple date extension that easily allows you to provide custom repeat date options for the Gregorian calendar. The package has been created and used for [Expenses.app](https://getexpenses.app), inspired by [Apple Reminders](https://apps.apple.com/us/app/reminders/id1108187841) and [Bluebird](https://bluebird.app).
 
 ## Usage
 

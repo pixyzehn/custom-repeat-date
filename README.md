@@ -10,6 +10,7 @@ A simple date extension that easily allows you to provide custom repeat date opt
 
 ```swift
 let option = CustomRepeatDateOption.monthly(frequency: 3, option: .daysOfWeek(weekdayOrdinal: .second, weekday: .tuesday))
+let calendar = Calendar(identifier: .gregorian)
 
 let startDate = date(year: 2022, month: 5, day: 5)                 // 2022-05-05 22:22:22 +0000
 let repeat1 = calendar.nextDate(after: startDate, option: option)! // 2022-05-10 22:22:22 +0000

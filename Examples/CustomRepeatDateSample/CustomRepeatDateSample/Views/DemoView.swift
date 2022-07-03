@@ -25,7 +25,7 @@ struct DemoView: View {
 
     func shortWeekdaySymbol(date: Date) -> String {
         let rawValue = calendar.component(.weekday, from: date)
-        return calendar.shortWeekdaySymbols[rawValue - 1]
+        return calendar.shortStandaloneWeekdaySymbols[rawValue - 1]
     }
 
     var body: some View {

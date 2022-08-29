@@ -72,6 +72,10 @@ extension CustomRepeatDateOption {
     }
 
     private func daySuffix(day: Int) -> String {
+        if day == CustomRepeatDateOption.MonthlyOption.lastDay {
+            return NSLocalizedString("last_day", comment: "")
+        }
+
         let numberFormatter = NumberFormatter()
         numberFormatter.numberStyle = .ordinal
         numberFormatter.locale = Locale.current

@@ -36,6 +36,7 @@ struct CustomRepeatDateView: View {
         Weekday.allCases.map(\.name),
     ]
     let allFrequencies = Frequency.allCases
+    let lastDay = CustomRepeatDateOption.MonthlyOption.lastDay
 
     func updateOption() {
         let frequency = selectedEvery
@@ -49,7 +50,12 @@ struct CustomRepeatDateView: View {
         case .monthly:
             switch selectedMonthlyType {
             case .daysOfMonth:
-                let days = Array(selectedDaysOfMonth).sorted()
+                var days = Array(selectedDaysOfMonth).sorted()
+                // Move the last day to the end
+                if days.contains(lastDay) {
+                    days.removeAll(where: { $0 == lastDay })
+                    days.append(lastDay)
+                }
                 option = .monthly(frequency: frequency, option: .daysOfMonth(days: days))
             case .daysOfWeek:
                 let weekdayOrdinal = selectedWeekdayOrdinalInMonthly
@@ -236,6 +242,29 @@ struct CustomRepeatDateView: View {
                                     }
                                 }
                                 .background(Color(uiColor: .systemGroupedBackground))
+                                Divider()
+                                    .frame(height: 1 / UIScreen.main.scale)
+                                    .background(Color(uiColor: .systemGroupedBackground))
+                                    .padding(0)
+                                HStack {
+                                    Spacer()
+                                    Text("last_day")
+                                        .foregroundColor(.primary)
+                                    Spacer()
+                                }
+                                .padding()
+                                .background(selectedDaysOfMonth.contains(lastDay) ? .blue : Color(uiColor: .secondarySystemGroupedBackground))
+                                .onTapGesture {
+                                    if selectedDaysOfMonth.contains(lastDay) {
+                                        if selectedDaysOfMonth.count > 1 {
+                                            selectedDaysOfMonth.remove(lastDay)
+                                        }
+                                    } else {
+                                        selectedDaysOfMonth.insert(lastDay)
+                                    }
+
+                                    updateOption()
+                                }
                             }
                             .listRowInsets(EdgeInsets())
                             .listRowSeparator(.hidden)

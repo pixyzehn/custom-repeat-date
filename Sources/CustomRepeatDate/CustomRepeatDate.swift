@@ -72,33 +72,41 @@ public extension Calendar {
 
             switch option {
             case let .daysOfMonth(days):
-                guard !days.isEmpty, days.allSatisfy({ $0 >= 1 && $0 <= 31 }) else {
+                let lastDay = CustomRepeatDateOption.MonthlyOption.lastDay
+                guard !days.isEmpty, days.allSatisfy({ ($0 >= 1 && $0 <= 31) || $0 == lastDay }) else {
                     return nil
                 }
 
                 var result = [Date]()
                 let year = component(.year, from: date)
                 let month = component(.month, from: date)
-                var afterDate = self.date(byAdding: .month, value: frequency, to: date) ?? date
+                var afterDate = self.date(byAdding: .month, value: frequency, to: startOfMonth(for: date)) ?? date
 
                 for day in days.sorted() {
-                    var dateComponents = dateComponents([.hour, .minute, .second], from: date)
-                    dateComponents.day = day
-
-                    enumerateDates(
-                        startingAfter: date,
-                        matching: dateComponents,
-                        matchingPolicy: .strict,
-                        repeatedTimePolicy: .first,
-                        direction: .forward
-                    ) { matchingDate, _, stop in
-                        guard let matchingDate = matchingDate else { stop = true; return }
-                        let matchingYear = component(.year, from: matchingDate)
-                        let matchingMonth = component(.month, from: matchingDate)
-                        if matchingYear == year, matchingMonth == month {
-                            result.append(matchingDate)
+                    if day == lastDay {
+                        let endOfMonth = endOfMonth(for: date)
+                        if endOfMonth > date {
+                            result.append(endOfMonth)
                         }
-                        stop = true
+                    } else {
+                        var dateComponents = dateComponents([.hour, .minute, .second], from: date)
+                        dateComponents.day = day
+
+                        enumerateDates(
+                            startingAfter: date,
+                            matching: dateComponents,
+                            matchingPolicy: .strict,
+                            repeatedTimePolicy: .first,
+                            direction: .forward
+                        ) { matchingDate, _, stop in
+                            guard let matchingDate = matchingDate else { stop = true; return }
+                            let matchingYear = component(.year, from: matchingDate)
+                            let matchingMonth = component(.month, from: matchingDate)
+                            if matchingYear == year, matchingMonth == month {
+                                result.append(matchingDate)
+                            }
+                            stop = true
+                        }
                     }
 
                     var afterDateComponents = self.dateComponents([.hour, .minute, .second], from: afterDate)
@@ -111,17 +119,24 @@ public extension Calendar {
                         maxDay = range(of: .day, in: .month, for: afterDate)?.count ?? 0
                     }
 
-                    // Set the start of the day to be able to check the 1st on each month
-                    enumerateDates(
-                        startingAfter: startOfDay(for: startOfMonth(for: afterDate)),
-                        matching: afterDateComponents,
-                        matchingPolicy: .strict,
-                        repeatedTimePolicy: .first,
-                        direction: .forward
-                    ) { matchingDate, _, stop in
-                        guard let matchingDate = matchingDate else { stop = true; return }
-                        result.append(matchingDate)
-                        stop = true
+                    if day == lastDay {
+                        let endOfMonth = endOfMonth(for: afterDate)
+                        if endOfMonth > afterDate {
+                            result.append(endOfMonth)
+                        }
+                    } else {
+                        // Set the start of the day to be able to check the 1st on each month
+                        enumerateDates(
+                            startingAfter: startOfDay(for: startOfMonth(for: afterDate)),
+                            matching: afterDateComponents,
+                            matchingPolicy: .strict,
+                            repeatedTimePolicy: .first,
+                            direction: .forward
+                        ) { matchingDate, _, stop in
+                            guard let matchingDate = matchingDate else { stop = true; return }
+                            result.append(matchingDate)
+                            stop = true
+                        }
                     }
                 }
 
@@ -131,7 +146,7 @@ public extension Calendar {
                 var result = [Date]()
                 let year = component(.year, from: date)
                 let month = component(.month, from: date)
-                let afterDate = self.date(byAdding: .month, value: frequency, to: date) ?? date
+                let afterDate = self.date(byAdding: .month, value: frequency, to: startOfMonth(for: date)) ?? date
 
                 if weekdayOrdinal == .last {
                     var dateComponents = dateComponents([.year, .month, .hour, .minute, .second], from: date)
@@ -206,7 +221,7 @@ public extension Calendar {
                 var result = [Date]()
                 let year = component(.year, from: date)
                 let day = component(.day, from: date)
-                let afterDate = self.date(byAdding: .year, value: frequency, to: date) ?? date
+                let afterDate = self.date(byAdding: .year, value: frequency, to: startOfYear(for: date)) ?? date
 
                 for month in months.sorted() {
                     var dateComponents = dateComponents([.hour, .minute, .second], from: date)
@@ -254,7 +269,7 @@ public extension Calendar {
 
                 var result = [Date]()
                 let year = component(.year, from: date)
-                let afterDate = self.date(byAdding: .year, value: frequency, to: date) ?? date
+                let afterDate = self.date(byAdding: .year, value: frequency, to: startOfYear(for: date)) ?? date
 
                 for month in months.sorted() {
                     if weekdayOrdinal == .last {

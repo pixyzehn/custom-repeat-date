@@ -15,6 +15,11 @@ extension Calendar {
         return self.date(from: dateComponents(components, from: date))!
     }
 
+    /// Return the last day of a given month, keepting the time.
+    func endOfMonth(for date: Date) -> Date {
+        self.date(byAdding: DateComponents(month: 1, day: -1), to: startOfMonth(for: date))!
+    }
+
     /// Return the first day of a given year, keepting the time.
     func startOfYear(for date: Date) -> Date {
         var components: Set<Calendar.Component> = [.year]

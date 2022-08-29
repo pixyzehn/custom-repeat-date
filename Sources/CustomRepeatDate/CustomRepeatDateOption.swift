@@ -11,7 +11,8 @@ public enum CustomRepeatDateOption: Codable, Hashable {
     case yearly(frequency: Int, option: YearlyOption)
 
     public enum MonthlyOption: Codable, Hashable {
-        /// Days of a month, such as on the 25th and 31st.
+        public static let lastDay = -1
+        /// Days of a month, such as on the 25th and 31st. If the day is -1, it means the last day of a month.
         case daysOfMonth(days: [Int])
         /// Days of a  week, such as on the 3rd Tuesday.
         case daysOfWeek(weekdayOrdinal: WeekdayOrdinal, weekday: Weekday)

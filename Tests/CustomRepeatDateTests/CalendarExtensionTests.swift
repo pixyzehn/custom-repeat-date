@@ -30,6 +30,11 @@ class CalendarExtensionTests: XCTestCase {
         XCTAssertEqual(calendar.startOfMonth(for: date(year: 2022, month: 6, day: 25)), date(year: 2022, month: 6, day: 1))
     }
 
+    func testEndOfMonth() {
+        XCTAssertEqual(calendar.endOfMonth(for: date(year: 2022, month: 5, day: 5)), date(year: 2022, month: 5, day: 31))
+        XCTAssertEqual(calendar.endOfMonth(for: date(year: 2022, month: 6, day: 25)), date(year: 2022, month: 6, day: 30))
+    }
+
     func testStartOfYear() {
         XCTAssertEqual(calendar.startOfYear(for: date(year: 2022, month: 5, day: 5)), date(year: 2022, month: 1, day: 1))
         XCTAssertEqual(calendar.startOfYear(for: date(year: 2023, month: 10, day: 25)), date(year: 2023, month: 1, day: 1))

@@ -156,6 +156,23 @@ final class CustomRepeatDateTests: XCTestCase {
         XCTAssertEqual(repeat5, date(year: 2023, month: 5, day: 31))
     }
 
+    func testMonthlyCustomRepeatDateDaysOfMonthWithLastDay() {
+        let option = CustomRepeatDateOption.monthly(frequency: 2, option: .daysOfMonth(days: [-1]))
+
+        let repeat1 = calendar.nextDate(after: date(year: 2022, month: 5, day: 5), option: option)!
+        let repeat2 = calendar.nextDate(after: repeat1, option: option)!
+        let repeat3 = calendar.nextDate(after: repeat2, option: option)!
+        let repeat4 = calendar.nextDate(after: repeat3, option: option)!
+        let repeat5 = calendar.nextDate(after: repeat4, option: option)!
+
+        // Skip cases where there is no 31th
+        XCTAssertEqual(repeat1, date(year: 2022, month: 5, day: 31))
+        XCTAssertEqual(repeat2, date(year: 2022, month: 7, day: 31))
+        XCTAssertEqual(repeat3, date(year: 2022, month: 9, day: 30))
+        XCTAssertEqual(repeat4, date(year: 2022, month: 11, day: 30))
+        XCTAssertEqual(repeat5, date(year: 2023, month: 1, day: 31))
+    }
+
     func testMonthlyCustomRepeatDateDaysOfMonthWithMultipleDays() {
         let option = CustomRepeatDateOption.monthly(frequency: 2, option: .daysOfMonth(days: [1, 5]))
 

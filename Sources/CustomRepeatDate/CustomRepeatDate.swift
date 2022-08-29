@@ -81,8 +81,16 @@ public extension Calendar {
                 let year = component(.year, from: date)
                 let month = component(.month, from: date)
                 var afterDate = self.date(byAdding: .month, value: frequency, to: startOfMonth(for: date)) ?? date
+                let days: [Int] = {
+                    var result = days.sorted()
+                    if result.contains(lastDay) {
+                        result.removeAll(where: { $0 == lastDay })
+                        result.append(lastDay)
+                    }
+                    return result
+                }()
 
-                for day in days.sorted() {
+                for day in days {
                     if day == lastDay {
                         let endOfMonth = endOfMonth(for: date)
                         if endOfMonth > date {

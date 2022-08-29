@@ -1,8 +1,16 @@
+import CustomRepeatDate
 import SwiftUI
 
 struct PickerView: UIViewRepresentable {
     var data: [[String]]
-    @Binding var selections: [Int]
+
+    enum Component: Int {
+        case weekdayOrdinal = 0
+        case weekday = 1
+    }
+
+    @Binding var selectedWeekdayOrdinal: WeekdayOrdinal
+    @Binding var selectedWeekday: Weekday
 
     func makeCoordinator() -> PickerView.Coordinator {
         Coordinator(self)
@@ -16,8 +24,12 @@ struct PickerView: UIViewRepresentable {
     }
 
     func updateUIView(_ view: UIPickerView, context _: UIViewRepresentableContext<PickerView>) {
-        for index in 0 ..< selections.count {
-            view.selectRow(selections[index], inComponent: index, animated: false)
+        if let index = WeekdayOrdinal.allCases.firstIndex(of: selectedWeekdayOrdinal) {
+            view.selectRow(index, inComponent: Component.weekdayOrdinal.rawValue, animated: false)
+        }
+
+        if let index = Weekday.allCases.firstIndex(of: selectedWeekday) {
+            view.selectRow(index, inComponent: Component.weekday.rawValue, animated: false)
         }
     }
 
@@ -41,7 +53,16 @@ struct PickerView: UIViewRepresentable {
         }
 
         func pickerView(_: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
-            parent.selections[component] = row
+            guard let component = Component(rawValue: component) else {
+                return
+            }
+
+            switch component {
+            case .weekdayOrdinal:
+                parent.selectedWeekdayOrdinal = WeekdayOrdinal.allCases[row]
+            case .weekday:
+                parent.selectedWeekday = Weekday.allCases[row]
+            }
         }
     }
 }

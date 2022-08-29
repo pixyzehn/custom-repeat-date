@@ -29,6 +29,7 @@
 "third" = "third";
 "fourth" = "fourth";
 "fifth" = "fifth";
+"last" = "last";
 
 // Daily
 "event_every_day" = "Event will occur every day.";

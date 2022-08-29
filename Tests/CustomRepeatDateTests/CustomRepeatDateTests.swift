@@ -231,6 +231,27 @@ final class CustomRepeatDateTests: XCTestCase {
         }
     }
 
+    func testMonthlyCustomRepeatDateDaysOfWeekWithLastWeekdayOrdinal() {
+        let option = CustomRepeatDateOption.monthly(frequency: 3, option: .daysOfWeek(weekdayOrdinal: .last, weekday: .monday))
+
+        let repeat1 = calendar.nextDate(after: date(year: 2022, month: 5, day: 5), option: option)!
+        let repeat2 = calendar.nextDate(after: repeat1, option: option)!
+        let repeat3 = calendar.nextDate(after: repeat2, option: option)!
+        let repeat4 = calendar.nextDate(after: repeat3, option: option)!
+        let repeat5 = calendar.nextDate(after: repeat4, option: option)!
+
+        XCTAssertEqual(repeat1, date(year: 2022, month: 5, day: 30))
+        XCTAssertEqual(repeat2, date(year: 2022, month: 8, day: 29))
+        XCTAssertEqual(repeat3, date(year: 2022, month: 11, day: 28))
+        XCTAssertEqual(repeat4, date(year: 2023, month: 2, day: 27))
+        XCTAssertEqual(repeat5, date(year: 2023, month: 5, day: 29))
+
+        for date in [repeat1, repeat2, repeat3, repeat4, repeat5] {
+            XCTAssertTrue([4, 5].contains(calendar.component(.weekdayOrdinal, from: date)))
+            XCTAssertEqual(calendar.component(.weekday, from: date), Weekday.monday.rawValue)
+        }
+    }
+
     func testMonthlyCustomRepeatDateDaysOfWeekWithMaxFrequency() {
         let option = CustomRepeatDateOption.monthly(frequency: 999, option: .daysOfWeek(weekdayOrdinal: .third, weekday: .wednesday))
 
@@ -359,6 +380,27 @@ final class CustomRepeatDateTests: XCTestCase {
         for date in [repeat1, repeat2, repeat3, repeat4, repeat5] {
             XCTAssertEqual(calendar.component(.weekdayOrdinal, from: date), WeekdayOrdinal.fifth.rawValue)
             XCTAssertEqual(calendar.component(.weekday, from: date), Weekday.friday.rawValue)
+        }
+    }
+
+    func testYearlyCustomRepeatDateDaysOfWeekWithLastWeekdayOrdinal() {
+        let option = CustomRepeatDateOption.yearly(frequency: 2, option: .daysOfWeek(months: [3, 8, 9], weekdayOrdinal: .last, weekday: .monday))
+
+        let repeat1 = calendar.nextDate(after: date(year: 2022, month: 5, day: 5), option: option)!
+        let repeat2 = calendar.nextDate(after: repeat1, option: option)!
+        let repeat3 = calendar.nextDate(after: repeat2, option: option)!
+        let repeat4 = calendar.nextDate(after: repeat3, option: option)!
+        let repeat5 = calendar.nextDate(after: repeat4, option: option)!
+
+        XCTAssertEqual(repeat1, date(year: 2022, month: 8, day: 29))
+        XCTAssertEqual(repeat2, date(year: 2022, month: 9, day: 26))
+        XCTAssertEqual(repeat3, date(year: 2024, month: 3, day: 25))
+        XCTAssertEqual(repeat4, date(year: 2024, month: 8, day: 26))
+        XCTAssertEqual(repeat5, date(year: 2024, month: 9, day: 30))
+
+        for date in [repeat1, repeat2, repeat3, repeat4, repeat5] {
+            XCTAssertTrue([4, 5].contains(calendar.component(.weekdayOrdinal, from: date)))
+            XCTAssertEqual(calendar.component(.weekday, from: date), Weekday.monday.rawValue)
         }
     }
 

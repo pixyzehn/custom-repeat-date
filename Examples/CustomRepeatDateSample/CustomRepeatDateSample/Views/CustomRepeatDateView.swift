@@ -22,12 +22,14 @@ struct CustomRepeatDateView: View {
 
     @State var selectedMonthlyType: MonthlyType = .daysOfMonth
     @State var selectedDaysOfMonth: Set<Int> = [1]
-    @State var selectedDaysOfWeekInMonthly: [Int] = [0, 0]
+    @State var selectedWeekdayOrdinalInMonthly: WeekdayOrdinal = .first
+    @State var selectedWeekdayInMonthly: Weekday = .monday
 
     // Yearly
     @State var selectedMonthsOfYear: Set<Int> = [1]
     @State var isDaysOfWeekEnabled = false
-    @State var selectedDaysOfWeekInYearly: [Int] = [0, 0]
+    @State var selectedWeekdayOrdinalInYearly: WeekdayOrdinal = .first
+    @State var selectedWeekdayInYearly: Weekday = .monday
 
     let allDaysOfWeek: [[String]] = [
         WeekdayOrdinal.allCases.map(\.name),
@@ -50,15 +52,15 @@ struct CustomRepeatDateView: View {
                 let days = Array(selectedDaysOfMonth).sorted()
                 option = .monthly(frequency: frequency, option: .daysOfMonth(days: days))
             case .daysOfWeek:
-                let weekdayOrdinal = WeekdayOrdinal(rawValue: selectedDaysOfWeekInMonthly[0] + 1) ?? .first
-                let weekday = Weekday(rawValue: selectedDaysOfWeekInMonthly[1] + 1) ?? .sunday
+                let weekdayOrdinal = selectedWeekdayOrdinalInMonthly
+                let weekday = selectedWeekdayInMonthly
                 option = .monthly(frequency: frequency, option: .daysOfWeek(weekdayOrdinal: weekdayOrdinal, weekday: weekday))
             }
         case .yearly:
             let months = Array(selectedMonthsOfYear).sorted()
             if isDaysOfWeekEnabled {
-                let weekdayOrdinal = WeekdayOrdinal(rawValue: selectedDaysOfWeekInYearly[0] + 1) ?? .first
-                let weekday = Weekday(rawValue: selectedDaysOfWeekInYearly[1] + 1) ?? .sunday
+                let weekdayOrdinal = selectedWeekdayOrdinalInYearly
+                let weekday = selectedWeekdayInYearly
                 option = .yearly(frequency: frequency, option: .daysOfWeek(months: months, weekdayOrdinal: weekdayOrdinal, weekday: weekday))
             } else {
                 option = .yearly(frequency: frequency, option: .daysOfYear(months: months))
@@ -82,12 +84,14 @@ struct CustomRepeatDateView: View {
         // Monthly
         selectedMonthlyType = .daysOfMonth
         selectedDaysOfMonth = [1]
-        selectedDaysOfWeekInMonthly = [1, 1]
+        selectedWeekdayOrdinalInMonthly = .first
+        selectedWeekdayInMonthly = .monday
 
         // Yearly
         selectedMonthsOfYear = [1]
         isDaysOfWeekEnabled = false
-        selectedDaysOfWeekInYearly = [1, 1]
+        selectedWeekdayOrdinalInYearly = .first
+        selectedWeekdayInYearly = .monday
     }
 
     var body: some View {
@@ -236,10 +240,17 @@ struct CustomRepeatDateView: View {
                             .listRowInsets(EdgeInsets())
                             .listRowSeparator(.hidden)
                         } else {
-                            PickerView(data: allDaysOfWeek, selections: $selectedDaysOfWeekInMonthly)
-                                .onChange(of: selectedDaysOfWeekInMonthly) { _ in
-                                    updateOption()
-                                }
+                            PickerView(
+                                data: allDaysOfWeek,
+                                selectedWeekdayOrdinal: $selectedWeekdayOrdinalInMonthly,
+                                selectedWeekday: $selectedWeekdayInMonthly
+                            )
+                            .onChange(of: selectedWeekdayOrdinalInMonthly) { _ in
+                                updateOption()
+                            }
+                            .onChange(of: selectedWeekdayInMonthly) { _ in
+                                updateOption()
+                            }
                         }
                     } else if selectedFrequency == .yearly {
                         LazyVGrid(columns: Array(repeating: GridItem(.flexible(minimum: 4), spacing: 1), count: 4), spacing: 1) {
@@ -278,10 +289,17 @@ struct CustomRepeatDateView: View {
                                 updateOption()
                             }
                         if isDaysOfWeekEnabled {
-                            PickerView(data: allDaysOfWeek, selections: $selectedDaysOfWeekInYearly)
-                                .onChange(of: selectedDaysOfWeekInYearly) { _ in
-                                    updateOption()
-                                }
+                            PickerView(
+                                data: allDaysOfWeek,
+                                selectedWeekdayOrdinal: $selectedWeekdayOrdinalInYearly,
+                                selectedWeekday: $selectedWeekdayInYearly
+                            )
+                            .onChange(of: selectedWeekdayOrdinalInYearly) { _ in
+                                updateOption()
+                            }
+                            .onChange(of: selectedWeekdayInYearly) { _ in
+                                updateOption()
+                            }
                         }
                     }
                 }

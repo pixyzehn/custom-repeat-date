@@ -9,6 +9,7 @@ extension WeekdayOrdinal {
         case .third: return NSLocalizedString("third", comment: "")
         case .fourth: return NSLocalizedString("fourth", comment: "")
         case .fifth: return NSLocalizedString("fifth", comment: "")
+        case .last: return NSLocalizedString("last", comment: "")
         }
     }
 }

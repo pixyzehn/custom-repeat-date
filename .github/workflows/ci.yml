@@ -16,7 +16,7 @@ jobs:
     strategy:
       matrix:
         xcode:
-          - 14.0.1
+          - "14.0"
     steps:
       - uses: actions/checkout@v2
 

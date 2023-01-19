@@ -121,6 +121,22 @@ final class CustomRepeatDateTests: XCTestCase {
         }
     }
 
+    func testWeeklyCustomRepeatDateFirstDayOfWeekIsIncluded() {
+        let option = CustomRepeatDateOption.weekly(frequency: 1, weekdays: [.monday])
+
+        let repeat1 = calendar.nextDate(after: date(year: 2023, month: 4, day: 3), option: option)!
+        let repeat2 = calendar.nextDate(after: repeat1, option: option)!
+        let repeat3 = calendar.nextDate(after: repeat2, option: option)!
+        let repeat4 = calendar.nextDate(after: repeat3, option: option)!
+        let repeat5 = calendar.nextDate(after: repeat4, option: option)!
+
+        XCTAssertEqual(repeat1, date(year: 2023, month: 4, day: 10))
+        XCTAssertEqual(repeat2, date(year: 2023, month: 4, day: 17))
+        XCTAssertEqual(repeat3, date(year: 2023, month: 4, day: 24))
+        XCTAssertEqual(repeat4, date(year: 2023, month: 5, day: 1))
+        XCTAssertEqual(repeat5, date(year: 2023, month: 5, day: 8))
+    }
+
     // MARK: - Monthly
 
     func testMonthlyCustomRepeatDateDaysOfMonth() {
@@ -290,6 +306,38 @@ final class CustomRepeatDateTests: XCTestCase {
         }
     }
 
+    func testMonthlyCustomRepeatDateDaysOfMonthFirstDayOfMonthIsIncluded() {
+        let option = CustomRepeatDateOption.monthly(frequency: 1, option: .daysOfMonth(days: [1]))
+
+        let repeat1 = calendar.nextDate(after: date(year: 2023, month: 4, day: 3), option: option)!
+        let repeat2 = calendar.nextDate(after: repeat1, option: option)!
+        let repeat3 = calendar.nextDate(after: repeat2, option: option)!
+        let repeat4 = calendar.nextDate(after: repeat3, option: option)!
+        let repeat5 = calendar.nextDate(after: repeat4, option: option)!
+
+        XCTAssertEqual(repeat1, date(year: 2023, month: 5, day: 1))
+        XCTAssertEqual(repeat2, date(year: 2023, month: 6, day: 1))
+        XCTAssertEqual(repeat3, date(year: 2023, month: 7, day: 1))
+        XCTAssertEqual(repeat4, date(year: 2023, month: 8, day: 1))
+        XCTAssertEqual(repeat5, date(year: 2023, month: 9, day: 1))
+    }
+
+    func testMonthlyCustomRepeatDateDaysOfWeekFirstDayOfMonthIsIncluded() {
+        let option = CustomRepeatDateOption.monthly(frequency: 1, option: .daysOfWeek(weekdayOrdinal: .first, weekday: .monday))
+
+        let repeat1 = calendar.nextDate(after: date(year: 2023, month: 4, day: 3), option: option)!
+        let repeat2 = calendar.nextDate(after: repeat1, option: option)!
+        let repeat3 = calendar.nextDate(after: repeat2, option: option)!
+        let repeat4 = calendar.nextDate(after: repeat3, option: option)!
+        let repeat5 = calendar.nextDate(after: repeat4, option: option)!
+
+        XCTAssertEqual(repeat1, date(year: 2023, month: 5, day: 1))
+        XCTAssertEqual(repeat2, date(year: 2023, month: 6, day: 5))
+        XCTAssertEqual(repeat3, date(year: 2023, month: 7, day: 3))
+        XCTAssertEqual(repeat4, date(year: 2023, month: 8, day: 7))
+        XCTAssertEqual(repeat5, date(year: 2023, month: 9, day: 4))
+    }
+
     // MARK: - Yearly
 
     func testYearlyCustomRepeatDateDaysOfYear() {
@@ -440,5 +488,37 @@ final class CustomRepeatDateTests: XCTestCase {
             XCTAssertEqual(calendar.component(.weekdayOrdinal, from: date), WeekdayOrdinal.second.rawValue)
             XCTAssertEqual(calendar.component(.weekday, from: date), Weekday.tuesday.rawValue)
         }
+    }
+
+    func testYearlyCustomRepeatDateDaysOfYearFirstDayOfYearIsIncluded() {
+        let option = CustomRepeatDateOption.yearly(frequency: 1, option: .daysOfYear(months: [4, 5, 6]))
+
+        let repeat1 = calendar.nextDate(after: date(year: 2023, month: 4, day: 1), option: option)!
+        let repeat2 = calendar.nextDate(after: repeat1, option: option)!
+        let repeat3 = calendar.nextDate(after: repeat2, option: option)!
+        let repeat4 = calendar.nextDate(after: repeat3, option: option)!
+        let repeat5 = calendar.nextDate(after: repeat4, option: option)!
+
+        XCTAssertEqual(repeat1, date(year: 2023, month: 5, day: 1))
+        XCTAssertEqual(repeat2, date(year: 2023, month: 6, day: 1))
+        XCTAssertEqual(repeat3, date(year: 2024, month: 4, day: 1))
+        XCTAssertEqual(repeat4, date(year: 2024, month: 5, day: 1))
+        XCTAssertEqual(repeat5, date(year: 2024, month: 6, day: 1))
+    }
+
+    func testYearlyCustomRepeatDateDaysOfWeekFirstDayOfYearIsIncluded() {
+        let option = CustomRepeatDateOption.yearly(frequency: 1, option: .daysOfWeek(months: [4, 5, 6], weekdayOrdinal: .first, weekday: .monday))
+
+        let repeat1 = calendar.nextDate(after: date(year: 2023, month: 4, day: 3), option: option)!
+        let repeat2 = calendar.nextDate(after: repeat1, option: option)!
+        let repeat3 = calendar.nextDate(after: repeat2, option: option)!
+        let repeat4 = calendar.nextDate(after: repeat3, option: option)!
+        let repeat5 = calendar.nextDate(after: repeat4, option: option)!
+
+        XCTAssertEqual(repeat1, date(year: 2023, month: 5, day: 1))
+        XCTAssertEqual(repeat2, date(year: 2023, month: 6, day: 5))
+        XCTAssertEqual(repeat3, date(year: 2024, month: 4, day: 1))
+        XCTAssertEqual(repeat4, date(year: 2024, month: 5, day: 6))
+        XCTAssertEqual(repeat5, date(year: 2024, month: 6, day: 3))
     }
 }

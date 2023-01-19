@@ -50,6 +50,7 @@ public extension Calendar {
                 var afterDateComponents = self.dateComponents([.hour, .minute, .second], from: afterDate)
                 afterDateComponents.weekday = weekday.rawValue
 
+                // Set the start of the day to be able to include the start of the week
                 enumerateDates(
                     startingAfter: startOfDay(for: startOfWeek(for: afterDate)),
                     matching: afterDateComponents,
@@ -133,7 +134,7 @@ public extension Calendar {
                             result.append(endOfMonth)
                         }
                     } else {
-                        // Set the start of the day to be able to check the 1st on each month
+                        // Set the start of the day to be able to include the start of the month
                         enumerateDates(
                             startingAfter: startOfDay(for: startOfMonth(for: afterDate)),
                             matching: afterDateComponents,
@@ -199,8 +200,9 @@ public extension Calendar {
                     afterDateComponents.weekday = weekday.rawValue
                     afterDateComponents.weekdayOrdinal = weekdayOrdinal.rawValue
 
+                    // Set the start of the day to be able to include the start of the month
                     enumerateDates(
-                        startingAfter: startOfMonth(for: afterDate),
+                        startingAfter: startOfDay(for: startOfMonth(for: afterDate)),
                         matching: afterDateComponents,
                         matchingPolicy: .strict,
                         repeatedTimePolicy: .first,
@@ -255,8 +257,9 @@ public extension Calendar {
                     afterDateComponents.month = month
                     afterDateComponents.day = day
 
+                    // Set the start of the day to be able to include the start of the year
                     enumerateDates(
-                        startingAfter: startOfYear(for: afterDate),
+                        startingAfter: startOfDay(for: startOfYear(for: afterDate)),
                         matching: afterDateComponents,
                         matchingPolicy: .strict,
                         repeatedTimePolicy: .first,
@@ -326,8 +329,9 @@ public extension Calendar {
                         afterDateComponents.weekday = weekday.rawValue
                         afterDateComponents.month = month
 
+                        // Set the start of the day to be able to include the start of the year
                         enumerateDates(
-                            startingAfter: startOfYear(for: afterDate),
+                            startingAfter: startOfDay(for: startOfYear(for: afterDate)),
                             matching: afterDateComponents,
                             matchingPolicy: .strict,
                             repeatedTimePolicy: .first,

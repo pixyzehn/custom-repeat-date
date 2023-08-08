@@ -50,9 +50,10 @@ public extension Calendar {
                 var afterDateComponents = self.dateComponents([.hour, .minute, .second], from: afterDate)
                 afterDateComponents.weekday = weekday.rawValue
 
-                // Set the start of the day to be able to include the start of the week
+                // Set the start of the day - 1s to be able to include the start of the week
+                let startingAfter = startOfDay(for: startOfWeek(for: afterDate)).addingTimeInterval(-1)
                 enumerateDates(
-                    startingAfter: startOfDay(for: startOfWeek(for: afterDate)),
+                    startingAfter: startingAfter,
                     matching: afterDateComponents,
                     matchingPolicy: .strict,
                     repeatedTimePolicy: .first,
@@ -134,9 +135,10 @@ public extension Calendar {
                             result.append(endOfMonth)
                         }
                     } else {
-                        // Set the start of the day to be able to include the start of the month
+                        // Set the start of the day - 1s to be able to include the start of the month
+                        let startingAfter = startOfDay(for: startOfMonth(for: afterDate)).addingTimeInterval(-1)
                         enumerateDates(
-                            startingAfter: startOfDay(for: startOfMonth(for: afterDate)),
+                            startingAfter: startingAfter,
                             matching: afterDateComponents,
                             matchingPolicy: .strict,
                             repeatedTimePolicy: .first,
@@ -200,9 +202,10 @@ public extension Calendar {
                     afterDateComponents.weekday = weekday.rawValue
                     afterDateComponents.weekdayOrdinal = weekdayOrdinal.rawValue
 
-                    // Set the start of the day to be able to include the start of the month
+                    // Set the start of the day - 1s to be able to include the start of the month
+                    let startingAfter = startOfDay(for: startOfMonth(for: afterDate)).addingTimeInterval(-1)
                     enumerateDates(
-                        startingAfter: startOfDay(for: startOfMonth(for: afterDate)),
+                        startingAfter: startingAfter,
                         matching: afterDateComponents,
                         matchingPolicy: .strict,
                         repeatedTimePolicy: .first,
@@ -257,9 +260,10 @@ public extension Calendar {
                     afterDateComponents.month = month
                     afterDateComponents.day = day
 
-                    // Set the start of the day to be able to include the start of the year
+                    // Set the start of the day -1s to be able to include the start of the year
+                    let startingAfter = startOfDay(for: startOfYear(for: afterDate))
                     enumerateDates(
-                        startingAfter: startOfDay(for: startOfYear(for: afterDate)),
+                        startingAfter: startingAfter,
                         matching: afterDateComponents,
                         matchingPolicy: .strict,
                         repeatedTimePolicy: .first,
@@ -329,9 +333,10 @@ public extension Calendar {
                         afterDateComponents.weekday = weekday.rawValue
                         afterDateComponents.month = month
 
-                        // Set the start of the day to be able to include the start of the year
+                        // Set the start of the day - 1s to be able to include the start of the year
+                        let startingAfter = startOfDay(for: startOfYear(for: afterDate)).addingTimeInterval(-1)
                         enumerateDates(
-                            startingAfter: startOfDay(for: startOfYear(for: afterDate)),
+                            startingAfter: startingAfter,
                             matching: afterDateComponents,
                             matchingPolicy: .strict,
                             repeatedTimePolicy: .first,

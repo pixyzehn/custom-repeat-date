@@ -9,14 +9,14 @@ final class CustomRepeatDateTests: XCTestCase {
         return calendar
     }()
 
-    func date(year: Int, month: Int, day: Int) -> Date {
+    func date(year: Int, month: Int, day: Int, hour: Int? = nil, minute: Int? = nil, second: Int? = nil) -> Date {
         var dateComponents = DateComponents()
         dateComponents.year = year
         dateComponents.month = month
         dateComponents.day = day
-        dateComponents.hour = 22
-        dateComponents.minute = 22
-        dateComponents.second = 22
+        dateComponents.hour = hour ?? 22
+        dateComponents.minute = minute ?? 22
+        dateComponents.second = second ?? 22
         return calendar.date(from: dateComponents)!
     }
 
@@ -135,6 +135,22 @@ final class CustomRepeatDateTests: XCTestCase {
         XCTAssertEqual(repeat3, date(year: 2023, month: 4, day: 24))
         XCTAssertEqual(repeat4, date(year: 2023, month: 5, day: 1))
         XCTAssertEqual(repeat5, date(year: 2023, month: 5, day: 8))
+    }
+
+    func testWeeklyWhenStartTimeIsAtMidnight() {
+        let option = CustomRepeatDateOption.weekly(frequency: 1, weekdays: [.monday])
+
+        let repeat1 = calendar.nextDate(after: date(year: 2023, month: 8, day: 7, hour: 0, minute: 0, second: 0), option: option)!
+        let repeat2 = calendar.nextDate(after: repeat1, option: option)!
+        let repeat3 = calendar.nextDate(after: repeat2, option: option)!
+        let repeat4 = calendar.nextDate(after: repeat3, option: option)!
+        let repeat5 = calendar.nextDate(after: repeat4, option: option)!
+
+        XCTAssertEqual(repeat1, date(year: 2023, month: 8, day: 14, hour: 0, minute: 0, second: 0))
+        XCTAssertEqual(repeat2, date(year: 2023, month: 8, day: 21, hour: 0, minute: 0, second: 0))
+        XCTAssertEqual(repeat3, date(year: 2023, month: 8, day: 28, hour: 0, minute: 0, second: 0))
+        XCTAssertEqual(repeat4, date(year: 2023, month: 9, day: 4, hour: 0, minute: 0, second: 0))
+        XCTAssertEqual(repeat5, date(year: 2023, month: 9, day: 11, hour: 0, minute: 0, second: 0))
     }
 
     // MARK: - Monthly
@@ -336,6 +352,22 @@ final class CustomRepeatDateTests: XCTestCase {
         XCTAssertEqual(repeat3, date(year: 2023, month: 7, day: 3))
         XCTAssertEqual(repeat4, date(year: 2023, month: 8, day: 7))
         XCTAssertEqual(repeat5, date(year: 2023, month: 9, day: 4))
+    }
+
+    func testMonthlyDaysOfMonthWhenStartTimeIsAtMidnight() {
+        let option = CustomRepeatDateOption.monthly(frequency: 1, option: .daysOfMonth(days: [1]))
+
+        let repeat1 = calendar.nextDate(after: date(year: 2023, month: 8, day: 1, hour: 0, minute: 0, second: 0), option: option)!
+        let repeat2 = calendar.nextDate(after: repeat1, option: option)!
+        let repeat3 = calendar.nextDate(after: repeat2, option: option)!
+        let repeat4 = calendar.nextDate(after: repeat3, option: option)!
+        let repeat5 = calendar.nextDate(after: repeat4, option: option)!
+
+        XCTAssertEqual(repeat1, date(year: 2023, month: 9, day: 1, hour: 0, minute: 0, second: 0))
+        XCTAssertEqual(repeat2, date(year: 2023, month: 10, day: 1, hour: 0, minute: 0, second: 0))
+        XCTAssertEqual(repeat3, date(year: 2023, month: 11, day: 1, hour: 0, minute: 0, second: 0))
+        XCTAssertEqual(repeat4, date(year: 2023, month: 12, day: 1, hour: 0, minute: 0, second: 0))
+        XCTAssertEqual(repeat5, date(year: 2024, month: 1, day: 1, hour: 0, minute: 0, second: 0))
     }
 
     // MARK: - Yearly

@@ -119,7 +119,7 @@ public extension Calendar {
                         }
                     }
 
-                    var afterDateComponents = self.dateComponents([.hour, .minute, .second], from: afterDate)
+                    var afterDateComponents = dateComponents([.hour, .minute, .second], from: afterDate)
                     afterDateComponents.day = day
 
                     // Update afterDate until it found the day
@@ -198,7 +198,7 @@ public extension Calendar {
                         result.append(matchingDate)
                     }
                 } else {
-                    var afterDateComponents = self.dateComponents([.hour, .minute, .second], from: afterDate)
+                    var afterDateComponents = dateComponents([.hour, .minute, .second], from: afterDate)
                     afterDateComponents.weekday = weekday.rawValue
                     afterDateComponents.weekdayOrdinal = weekdayOrdinal.rawValue
 
@@ -328,7 +328,7 @@ public extension Calendar {
                             result.append(matchingDate)
                         }
                     } else {
-                        var afterDateComponents = self.dateComponents([.hour, .minute, .second], from: afterDate)
+                        var afterDateComponents = dateComponents([.hour, .minute, .second], from: afterDate)
                         afterDateComponents.weekdayOrdinal = weekdayOrdinal.rawValue
                         afterDateComponents.weekday = weekday.rawValue
                         afterDateComponents.month = month

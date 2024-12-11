@@ -261,7 +261,7 @@ public extension Calendar {
                     afterDateComponents.day = day
 
                     // Set the start of the day -1s to be able to include the start of the year
-                    let startingAfter = startOfDay(for: startOfYear(for: afterDate))
+                    let startingAfter = startOfDay(for: startOfYear(for: afterDate)).addingTimeInterval(-1)
                     enumerateDates(
                         startingAfter: startingAfter,
                         matching: afterDateComponents,

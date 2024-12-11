@@ -388,6 +388,38 @@ final class CustomRepeatDateTests: XCTestCase {
         XCTAssertEqual(repeat5, date(year: 2034, month: 6, day: 12))
     }
 
+    func testYearlyCustomRepeatDateDaysOfYearIsStartOfYear() {
+        let option = CustomRepeatDateOption.yearly(frequency: 1, option: .daysOfYear(months: [1]))
+
+        let repeat1 = calendar.nextDate(after: date(year: 2022, month: 1, day: 1), option: option)!
+        let repeat2 = calendar.nextDate(after: repeat1, option: option)!
+        let repeat3 = calendar.nextDate(after: repeat2, option: option)!
+        let repeat4 = calendar.nextDate(after: repeat3, option: option)!
+        let repeat5 = calendar.nextDate(after: repeat4, option: option)!
+
+        XCTAssertEqual(repeat1, date(year: 2023, month: 1, day: 1))
+        XCTAssertEqual(repeat2, date(year: 2024, month: 1, day: 1))
+        XCTAssertEqual(repeat3, date(year: 2025, month: 1, day: 1))
+        XCTAssertEqual(repeat4, date(year: 2026, month: 1, day: 1))
+        XCTAssertEqual(repeat5, date(year: 2027, month: 1, day: 1))
+    }
+
+    func testYearlyCustomRepeatDateDaysOfYearIsEndOfYear() {
+        let option = CustomRepeatDateOption.yearly(frequency: 1, option: .daysOfYear(months: [12]))
+
+        let repeat1 = calendar.nextDate(after: date(year: 2022, month: 12, day: 31), option: option)!
+        let repeat2 = calendar.nextDate(after: repeat1, option: option)!
+        let repeat3 = calendar.nextDate(after: repeat2, option: option)!
+        let repeat4 = calendar.nextDate(after: repeat3, option: option)!
+        let repeat5 = calendar.nextDate(after: repeat4, option: option)!
+        
+        XCTAssertEqual(repeat1, date(year: 2023, month: 12, day: 31))
+        XCTAssertEqual(repeat2, date(year: 2024, month: 12, day: 31))
+        XCTAssertEqual(repeat3, date(year: 2025, month: 12, day: 31))
+        XCTAssertEqual(repeat4, date(year: 2026, month: 12, day: 31))
+        XCTAssertEqual(repeat5, date(year: 2027, month: 12, day: 31))
+    }
+
     func testYearlyCustomRepeatDateDaysOfYearWithSkippingCases() {
         let option = CustomRepeatDateOption.yearly(frequency: 3, option: .daysOfYear(months: [1, 4]))
 

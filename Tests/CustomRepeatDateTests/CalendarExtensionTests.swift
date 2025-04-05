@@ -1,8 +1,9 @@
 @testable import CustomRepeatDate
-import XCTest
+import Testing
+import Foundation
 
-class CalendarExtensionTests: XCTestCase {
-    lazy var calendar: Calendar = {
+struct CalendarExtensionTests {
+    var calendar: Calendar = {
         var calendar = Calendar(identifier: .gregorian)
         calendar.timeZone = TimeZone(secondsFromGMT: 0)!
         calendar.firstWeekday = 2 // Set Monday as first weekday
@@ -20,23 +21,23 @@ class CalendarExtensionTests: XCTestCase {
         return calendar.date(from: dateComponents)!
     }
 
-    func testStartOfWeek() {
-        XCTAssertEqual(calendar.startOfWeek(for: date(year: 2022, month: 5, day: 5)), date(year: 2022, month: 5, day: 2))
-        XCTAssertEqual(calendar.startOfWeek(for: date(year: 2022, month: 6, day: 2)), date(year: 2022, month: 5, day: 30))
+    @Test func startOfWeek() {
+        #expect(calendar.startOfWeek(for: date(year: 2022, month: 5, day: 5)) == date(year: 2022, month: 5, day: 2))
+        #expect(calendar.startOfWeek(for: date(year: 2022, month: 6, day: 2)) == date(year: 2022, month: 5, day: 30))
     }
 
-    func testStartOfMonth() {
-        XCTAssertEqual(calendar.startOfMonth(for: date(year: 2022, month: 5, day: 5)), date(year: 2022, month: 5, day: 1))
-        XCTAssertEqual(calendar.startOfMonth(for: date(year: 2022, month: 6, day: 25)), date(year: 2022, month: 6, day: 1))
+    @Test func startOfMonth() {
+        #expect(calendar.startOfMonth(for: date(year: 2022, month: 5, day: 5)) == date(year: 2022, month: 5, day: 1))
+        #expect(calendar.startOfMonth(for: date(year: 2022, month: 6, day: 25)) == date(year: 2022, month: 6, day: 1))
     }
 
-    func testEndOfMonth() {
-        XCTAssertEqual(calendar.endOfMonth(for: date(year: 2022, month: 5, day: 5)), date(year: 2022, month: 5, day: 31))
-        XCTAssertEqual(calendar.endOfMonth(for: date(year: 2022, month: 6, day: 25)), date(year: 2022, month: 6, day: 30))
+    @Test func endOfMonth() {
+        #expect(calendar.endOfMonth(for: date(year: 2022, month: 5, day: 5)) == date(year: 2022, month: 5, day: 31))
+        #expect(calendar.endOfMonth(for: date(year: 2022, month: 6, day: 25)) == date(year: 2022, month: 6, day: 30))
     }
 
-    func testStartOfYear() {
-        XCTAssertEqual(calendar.startOfYear(for: date(year: 2022, month: 5, day: 5)), date(year: 2022, month: 1, day: 1))
-        XCTAssertEqual(calendar.startOfYear(for: date(year: 2023, month: 10, day: 25)), date(year: 2023, month: 1, day: 1))
+    @Test func startOfYear() {
+        #expect(calendar.startOfYear(for: date(year: 2022, month: 5, day: 5)) == date(year: 2022, month: 1, day: 1))
+        #expect(calendar.startOfYear(for: date(year: 2023, month: 10, day: 25)) == date(year: 2023, month: 1, day: 1))
     }
 }

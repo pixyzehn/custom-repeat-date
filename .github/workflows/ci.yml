@@ -27,4 +27,4 @@ jobs:
 
       - name: Run test
         run: |
-          xcodebuild test -scheme CustomRepeatDate -destination platform="iOS Simulator,name=iPhone 16 Pro"
+          xcodebuild test -scheme CustomRepeatDate -destination platform="iOS Simulator,name=iPhone 17 Pro"

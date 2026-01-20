@@ -261,69 +261,43 @@ public extension Calendar {
                 }
 
                 var result = [Date]()
+                let timeComponents = dateComponents([.hour, .minute, .second], from: date)
                 let year = component(.year, from: date)
-                let afterDate = self.date(byAdding: .year, value: frequency, to: startOfYear(for: date)) ?? date
+                let sortedMonths = months.sorted()
 
-                for month in months.sorted() {
-                    if weekdayOrdinal == .last {
-                        var dateComponents = dateComponents([.year, .hour, .minute, .second], from: date)
-                        dateComponents.weekdayOrdinal = weekdayOrdinal.rawValue
-                        dateComponents.weekday = weekday.rawValue
-                        dateComponents.month = month
-
-                        if let matchingDate = self.date(from: dateComponents), matchingDate > date {
-                            result.append(matchingDate)
-                        }
-                    } else {
-                        var dateComponents = dateComponents([.hour, .minute, .second], from: date)
-                        dateComponents.weekdayOrdinal = weekdayOrdinal.rawValue
-                        dateComponents.weekday = weekday.rawValue
-                        dateComponents.month = month
-
-                        enumerateDates(
-                            startingAfter: date,
-                            matching: dateComponents,
-                            matchingPolicy: .strict,
-                            repeatedTimePolicy: .first,
-                            direction: .forward
-                        ) { matchingDate, _, stop in
-                            guard let matchingDate = matchingDate else { stop = true; return }
-                            let matchingYear = component(.year, from: matchingDate)
-                            if matchingYear == year {
-                                result.append(matchingDate)
-                            }
-                            stop = true
-                        }
+                for month in sortedMonths {
+                    if let matchingDate = weekdayOrdinalDate(
+                        year: year,
+                        month: month,
+                        timeComponents: timeComponents,
+                        weekdayOrdinal: weekdayOrdinal,
+                        weekday: weekday
+                    ),
+                        matchingDate > date {
+                        result.append(matchingDate)
                     }
+                }
 
-                    if weekdayOrdinal == .last {
-                        var dateComponents = dateComponents([.year, .hour, .minute, .second], from: startOfYear(for: afterDate))
-                        dateComponents.weekdayOrdinal = weekdayOrdinal.rawValue
-                        dateComponents.weekday = weekday.rawValue
-                        dateComponents.month = month
+                let maxYearIterations = 400 / gcd(400, frequency)
+                let baseAfterDate = self.date(byAdding: .year, value: frequency, to: startOfYear(for: date)) ?? date
+                let afterTimeComponents = dateComponents([.hour, .minute, .second], from: baseAfterDate)
 
-                        if let matchingDate = self.date(from: dateComponents) {
+                for month in sortedMonths {
+                    var afterDate = baseAfterDate
+                    for _ in 0 ..< maxYearIterations {
+                        let targetYear = component(.year, from: afterDate)
+                        if let matchingDate = weekdayOrdinalDate(
+                            year: targetYear,
+                            month: month,
+                            timeComponents: afterTimeComponents,
+                            weekdayOrdinal: weekdayOrdinal,
+                            weekday: weekday
+                        ) {
                             result.append(matchingDate)
+                            break
                         }
-                    } else {
-                        var afterDateComponents = dateComponents([.hour, .minute, .second], from: afterDate)
-                        afterDateComponents.weekdayOrdinal = weekdayOrdinal.rawValue
-                        afterDateComponents.weekday = weekday.rawValue
-                        afterDateComponents.month = month
 
-                        // Set the start of the day - 1s to be able to include the start of the year
-                        let startingAfter = startOfDay(for: startOfYear(for: afterDate)).addingTimeInterval(-1)
-                        enumerateDates(
-                            startingAfter: startingAfter,
-                            matching: afterDateComponents,
-                            matchingPolicy: .strict,
-                            repeatedTimePolicy: .first,
-                            direction: .forward
-                        ) { matchingDate, _, stop in
-                            guard let matchingDate = matchingDate else { stop = true; return }
-                            result.append(matchingDate)
-                            stop = true
-                        }
+                        afterDate = self.date(byAdding: .year, value: frequency, to: afterDate) ?? afterDate
                     }
                 }
 
@@ -331,4 +305,43 @@ public extension Calendar {
             }
         }
     }
+
+    private func weekdayOrdinalDate(
+        year: Int,
+        month: Int,
+        timeComponents: DateComponents,
+        weekdayOrdinal: WeekdayOrdinal,
+        weekday: Weekday
+    ) -> Date? {
+        var dateComponents = DateComponents()
+        dateComponents.year = year
+        dateComponents.month = month
+        dateComponents.hour = timeComponents.hour
+        dateComponents.minute = timeComponents.minute
+        dateComponents.second = timeComponents.second
+        dateComponents.weekdayOrdinal = weekdayOrdinal.rawValue
+        dateComponents.weekday = weekday.rawValue
+
+        guard let matchingDate = self.date(from: dateComponents) else {
+            return nil
+        }
+
+        guard component(.year, from: matchingDate) == year,
+              component(.month, from: matchingDate) == month else {
+            return nil
+        }
+
+        return matchingDate
+    }
+}
+
+private func gcd(_ lhs: Int, _ rhs: Int) -> Int {
+    var a = lhs
+    var b = rhs
+    while b != 0 {
+        let remainder = a % b
+        a = b
+        b = remainder
+    }
+    return a
 }

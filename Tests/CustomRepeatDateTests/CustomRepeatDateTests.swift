@@ -574,6 +574,14 @@ struct CustomRepeatDateTests {
         }
     }
 
+    @Test func yearlyCustomRepeatDateDaysOfWeekRespectsFrequency() {
+        let option = CustomRepeatDateOption.yearly(frequency: 2, option: .daysOfWeek(months: [4], weekdayOrdinal: .fifth, weekday: .monday))
+
+        let repeat1 = calendar.nextDate(after: date(year: 2021, month: 1, day: 1), option: option)!
+
+        #expect(repeat1 == date(year: 2029, month: 4, day: 30))
+    }
+
     @Test func yearlyCustomRepeatDateDaysOfYearFirstDayOfYearIsIncluded() {
         let option = CustomRepeatDateOption.yearly(frequency: 1, option: .daysOfYear(months: [4, 5, 6]))
 

@@ -159,66 +159,40 @@ public extension Calendar {
 
             case let .daysOfWeek(weekdayOrdinal, weekday):
                 var result = [Date]()
+                let timeComponents = dateComponents([.hour, .minute, .second], from: date)
                 let year = component(.year, from: date)
                 let month = component(.month, from: date)
-                let afterDate = self.date(byAdding: .month, value: frequency, to: startOfMonth(for: date)) ?? date
 
-                if weekdayOrdinal == .last {
-                    var dateComponents = dateComponents([.year, .month, .hour, .minute, .second], from: date)
-                    dateComponents.weekday = weekday.rawValue
-                    dateComponents.weekdayOrdinal = weekdayOrdinal.rawValue
-
-                    if let matchingDate = self.date(from: dateComponents), matchingDate > date {
-                        result.append(matchingDate)
-                    }
-                } else {
-                    var dateComponents = dateComponents([.hour, .minute, .second], from: date)
-                    dateComponents.weekday = weekday.rawValue
-                    dateComponents.weekdayOrdinal = weekdayOrdinal.rawValue
-
-                    enumerateDates(
-                        startingAfter: date,
-                        matching: dateComponents,
-                        matchingPolicy: .strict,
-                        repeatedTimePolicy: .first,
-                        direction: .forward
-                    ) { matchingDate, _, stop in
-                        guard let matchingDate = matchingDate else { stop = true; return }
-                        let matchingYear = component(.year, from: matchingDate)
-                        let matchingMonth = component(.month, from: matchingDate)
-                        if matchingYear == year, matchingMonth == month {
-                            result.append(matchingDate)
-                        }
-                        stop = true
-                    }
+                if let matchingDate = weekdayOrdinalDate(
+                    year: year,
+                    month: month,
+                    timeComponents: timeComponents,
+                    weekdayOrdinal: weekdayOrdinal,
+                    weekday: weekday
+                ),
+                    matchingDate > date {
+                    result.append(matchingDate)
                 }
 
-                if weekdayOrdinal == .last {
-                    var dateComponents = dateComponents([.year, .month, .hour, .minute, .second], from: startOfMonth(for: afterDate))
-                    dateComponents.weekday = weekday.rawValue
-                    dateComponents.weekdayOrdinal = weekdayOrdinal.rawValue
+                let maxMonthIterations = 4800 / gcd(4800, frequency)
+                var afterDate = self.date(byAdding: .month, value: frequency, to: startOfMonth(for: date)) ?? date
+                let afterTimeComponents = dateComponents([.hour, .minute, .second], from: afterDate)
 
-                    if let matchingDate = self.date(from: dateComponents) {
+                for _ in 0 ..< maxMonthIterations {
+                    let targetYear = component(.year, from: afterDate)
+                    let targetMonth = component(.month, from: afterDate)
+                    if let matchingDate = weekdayOrdinalDate(
+                        year: targetYear,
+                        month: targetMonth,
+                        timeComponents: afterTimeComponents,
+                        weekdayOrdinal: weekdayOrdinal,
+                        weekday: weekday
+                    ) {
                         result.append(matchingDate)
+                        break
                     }
-                } else {
-                    var afterDateComponents = dateComponents([.hour, .minute, .second], from: afterDate)
-                    afterDateComponents.weekday = weekday.rawValue
-                    afterDateComponents.weekdayOrdinal = weekdayOrdinal.rawValue
 
-                    // Set the start of the day - 1s to be able to include the start of the month
-                    let startingAfter = startOfDay(for: startOfMonth(for: afterDate)).addingTimeInterval(-1)
-                    enumerateDates(
-                        startingAfter: startingAfter,
-                        matching: afterDateComponents,
-                        matchingPolicy: .strict,
-                        repeatedTimePolicy: .first,
-                        direction: .forward
-                    ) { matchingDate, _, stop in
-                        guard let matchingDate = matchingDate else { stop = true; return }
-                        result.append(matchingDate)
-                        stop = true
-                    }
+                    afterDate = self.date(byAdding: .month, value: frequency, to: afterDate) ?? afterDate
                 }
 
                 return result.sorted().first

@@ -292,6 +292,14 @@ struct CustomRepeatDateTests {
         }
     }
 
+    @Test func monthlyCustomRepeatDateDaysOfWeekRespectsFrequency() {
+        let option = CustomRepeatDateOption.monthly(frequency: 2, option: .daysOfWeek(weekdayOrdinal: .fifth, weekday: .friday))
+
+        let repeat1 = calendar.nextDate(after: date(year: 2020, month: 2, day: 1), option: option)!
+
+        #expect(repeat1 == date(year: 2020, month: 10, day: 30))
+    }
+
     @Test func monthlyCustomRepeatDateDaysOfWeekWithLastWeekdayOrdinal() {
         let option = CustomRepeatDateOption.monthly(frequency: 3, option: .daysOfWeek(weekdayOrdinal: .last, weekday: .monday))
 

@@ -206,6 +206,17 @@ struct CustomRepeatDateTests {
         #expect(repeat5 == date(year: 2023, month: 1, day: 31))
     }
 
+    @Test func monthlyCustomRepeatDateDaysOfMonthWithLastDayAnd31() {
+        let option = CustomRepeatDateOption.monthly(
+            frequency: 1,
+            option: .daysOfMonth(days: [31, CustomRepeatDateOption.MonthlyOption.lastDay])
+        )
+
+        let repeat1 = calendar.nextDate(after: date(year: 2022, month: 5, day: 31), option: option)!
+
+        #expect(repeat1 == date(year: 2022, month: 6, day: 30))
+    }
+
     @Test func monthlyCustomRepeatDateDaysOfMonthWithMultipleDays() {
         let option = CustomRepeatDateOption.monthly(frequency: 2, option: .daysOfMonth(days: [1, 5]))
 

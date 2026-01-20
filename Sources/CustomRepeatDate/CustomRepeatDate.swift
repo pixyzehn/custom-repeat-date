@@ -82,7 +82,7 @@ public extension Calendar {
                 var result = [Date]()
                 let year = component(.year, from: date)
                 let month = component(.month, from: date)
-                var afterDate = self.date(byAdding: .month, value: frequency, to: startOfMonth(for: date)) ?? date
+                let baseAfterDate = self.date(byAdding: .month, value: frequency, to: startOfMonth(for: date)) ?? date
                 let days: [Int] = {
                     var result = days.sorted()
                     if result.contains(lastDay) {
@@ -93,6 +93,8 @@ public extension Calendar {
                 }()
 
                 for day in days {
+                    var afterDate = baseAfterDate
+
                     if day == lastDay {
                         let endOfMonth = endOfMonth(for: date)
                         if endOfMonth > date {
@@ -119,14 +121,13 @@ public extension Calendar {
                         }
                     }
 
-                    var afterDateComponents = dateComponents([.hour, .minute, .second], from: afterDate)
-                    afterDateComponents.day = day
-
                     // Update afterDate until it found the day
-                    var maxDay = range(of: .day, in: .month, for: afterDate)?.count ?? 0
-                    while day > maxDay {
-                        afterDate = self.date(byAdding: .month, value: frequency, to: afterDate) ?? afterDate
-                        maxDay = range(of: .day, in: .month, for: afterDate)?.count ?? 0
+                    if day != lastDay {
+                        var maxDay = range(of: .day, in: .month, for: afterDate)?.count ?? 0
+                        while day > maxDay {
+                            afterDate = self.date(byAdding: .month, value: frequency, to: afterDate) ?? afterDate
+                            maxDay = range(of: .day, in: .month, for: afterDate)?.count ?? 0
+                        }
                     }
 
                     if day == lastDay {
@@ -135,6 +136,9 @@ public extension Calendar {
                             result.append(endOfMonth)
                         }
                     } else {
+                        var afterDateComponents = dateComponents([.hour, .minute, .second], from: afterDate)
+                        afterDateComponents.day = day
+
                         // Set the start of the day - 1s to be able to include the start of the month
                         let startingAfter = startOfDay(for: startOfMonth(for: afterDate)).addingTimeInterval(-1)
                         enumerateDates(

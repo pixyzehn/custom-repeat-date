@@ -2,6 +2,8 @@ import CustomRepeatDate
 import SwiftUI
 
 struct CustomRepeatDateView: View {
+    @Environment(\.displayScale) private var displayScale
+
     @State var option: CustomRepeatDateOption = .daily(frequency: 1)
 
     @State var isFrequencySelection = false
@@ -132,7 +134,7 @@ struct CustomRepeatDateView: View {
                             }
                         }
                         .pickerStyle(.wheel)
-                        .onChange(of: selectedFrequency) { _ in
+                        .onChange(of: selectedFrequency) {
                             updateOption()
                         }
                     }
@@ -156,7 +158,7 @@ struct CustomRepeatDateView: View {
                             }
                         }
                         .pickerStyle(.wheel)
-                        .onChange(of: selectedEvery) { _ in
+                        .onChange(of: selectedEvery) {
                             updateOption()
                         }
                     }
@@ -215,7 +217,7 @@ struct CustomRepeatDateView: View {
                         if selectedMonthlyType == .daysOfMonth {
                             VStack(spacing: 0) {
                                 Divider()
-                                    .frame(height: 1 / UIScreen.main.scale)
+                                    .frame(height: 1 / displayScale)
                                     .background(Color(uiColor: .systemGroupedBackground))
                                     .padding(0)
                                 LazyVGrid(columns: Array(repeating: GridItem(.flexible(minimum: 4), spacing: 1), count: 7), spacing: 1) {
@@ -243,7 +245,7 @@ struct CustomRepeatDateView: View {
                                 }
                                 .background(Color(uiColor: .systemGroupedBackground))
                                 Divider()
-                                    .frame(height: 1 / UIScreen.main.scale)
+                                    .frame(height: 1 / displayScale)
                                     .background(Color(uiColor: .systemGroupedBackground))
                                     .padding(0)
                                 HStack {
@@ -274,10 +276,10 @@ struct CustomRepeatDateView: View {
                                 selectedWeekdayOrdinal: $selectedWeekdayOrdinalInMonthly,
                                 selectedWeekday: $selectedWeekdayInMonthly
                             )
-                            .onChange(of: selectedWeekdayOrdinalInMonthly) { _ in
+                            .onChange(of: selectedWeekdayOrdinalInMonthly) {
                                 updateOption()
                             }
-                            .onChange(of: selectedWeekdayInMonthly) { _ in
+                            .onChange(of: selectedWeekdayInMonthly) {
                                 updateOption()
                             }
                         }
@@ -314,7 +316,7 @@ struct CustomRepeatDateView: View {
                 if selectedFrequency == .yearly {
                     Section {
                         Toggle("days_of_week", isOn: $isDaysOfWeekEnabled)
-                            .onChange(of: isDaysOfWeekEnabled) { _ in
+                            .onChange(of: isDaysOfWeekEnabled) {
                                 updateOption()
                             }
                         if isDaysOfWeekEnabled {
@@ -323,10 +325,10 @@ struct CustomRepeatDateView: View {
                                 selectedWeekdayOrdinal: $selectedWeekdayOrdinalInYearly,
                                 selectedWeekday: $selectedWeekdayInYearly
                             )
-                            .onChange(of: selectedWeekdayOrdinalInYearly) { _ in
+                            .onChange(of: selectedWeekdayOrdinalInYearly) {
                                 updateOption()
                             }
-                            .onChange(of: selectedWeekdayInYearly) { _ in
+                            .onChange(of: selectedWeekdayInYearly) {
                                 updateOption()
                             }
                         }

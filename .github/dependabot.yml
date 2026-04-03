@@ -3,7 +3,6 @@ updates:
   - package-ecosystem: "swift"
     directories:
       - "/"
-      - "/Examples/CustomRepeatDateSample/CustomRepeatDateSample.xcodeproj/project.xcworkspace/xcshareddata/swiftpm"
     schedule:
       interval: "weekly"
       day: "monday"

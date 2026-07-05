@@ -83,6 +83,7 @@ public extension Calendar {
                 let year = component(.year, from: date)
                 let month = component(.month, from: date)
                 let baseAfterDate = self.date(byAdding: .month, value: frequency, to: startOfMonth(for: date)) ?? date
+                let maxMonthIterations = 4800 / gcd(4800, frequency)
                 let days: [Int] = {
                     var result = days.sorted()
                     if result.contains(lastDay) {
@@ -124,9 +125,15 @@ public extension Calendar {
                     // Update afterDate until it found the day
                     if day != lastDay {
                         var maxDay = range(of: .day, in: .month, for: afterDate)?.count ?? 0
-                        while day > maxDay {
+                        var monthIterations = 0
+                        while day > maxDay, monthIterations < maxMonthIterations {
                             afterDate = self.date(byAdding: .month, value: frequency, to: afterDate) ?? afterDate
                             maxDay = range(of: .day, in: .month, for: afterDate)?.count ?? 0
+                            monthIterations += 1
+                        }
+
+                        if day > maxDay {
+                            continue
                         }
                     }
 

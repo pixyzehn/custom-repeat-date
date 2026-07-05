@@ -249,6 +249,14 @@ struct CustomRepeatDateTests {
         #expect(repeat5 == date(year: 2438, month: 8, day: 5))
     }
 
+    @Test func monthlyCustomRepeatDateDaysOfMonthReturnsNilWhenDayNeverExistsInFrequency() {
+        let option = CustomRepeatDateOption.monthly(frequency: 12, option: .daysOfMonth(days: [31]))
+
+        let repeat1 = calendar.nextDate(after: date(year: 2022, month: 2, day: 15), option: option)
+
+        #expect(repeat1 == nil)
+    }
+
     @Test func monthlyCustomRepeatDateDaysOfWeek() {
         let option = CustomRepeatDateOption.monthly(frequency: 3, option: .daysOfWeek(weekdayOrdinal: .second, weekday: .tuesday))
 

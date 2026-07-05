@@ -10,7 +10,15 @@ struct CustomRepeatDateTests {
         return calendar
     }()
 
-    func date(year: Int, month: Int, day: Int, hour: Int? = nil, minute: Int? = nil, second: Int? = nil) -> Date {
+    func date(
+        year: Int,
+        month: Int,
+        day: Int,
+        hour: Int? = nil,
+        minute: Int? = nil,
+        second: Int? = nil,
+        nanosecond: Int? = nil
+    ) -> Date {
         var dateComponents = DateComponents()
         dateComponents.year = year
         dateComponents.month = month
@@ -18,6 +26,7 @@ struct CustomRepeatDateTests {
         dateComponents.hour = hour ?? 22
         dateComponents.minute = minute ?? 22
         dateComponents.second = second ?? 22
+        dateComponents.nanosecond = nanosecond
         return calendar.date(from: dateComponents)!
     }
 
@@ -35,7 +44,8 @@ struct CustomRepeatDateTests {
         day: Int,
         hour: Int? = nil,
         minute: Int? = nil,
-        second: Int? = nil
+        second: Int? = nil,
+        nanosecond: Int? = nil
     ) -> Date {
         var dateComponents = DateComponents()
         dateComponents.year = year
@@ -44,7 +54,12 @@ struct CustomRepeatDateTests {
         dateComponents.hour = hour ?? 22
         dateComponents.minute = minute ?? 22
         dateComponents.second = second ?? 22
+        dateComponents.nanosecond = nanosecond
         return calendar.date(from: dateComponents)!
+    }
+
+    func nanosecond(from date: Date) -> Int {
+        calendar.component(.nanosecond, from: date)
     }
 
     // MARK: - Daily
@@ -178,6 +193,18 @@ struct CustomRepeatDateTests {
         #expect(repeat3 == date(year: 2023, month: 8, day: 28, hour: 0, minute: 0, second: 0))
         #expect(repeat4 == date(year: 2023, month: 9, day: 4, hour: 0, minute: 0, second: 0))
         #expect(repeat5 == date(year: 2023, month: 9, day: 11, hour: 0, minute: 0, second: 0))
+    }
+
+    @Test func weeklyPreservesNanoseconds() {
+        let option = CustomRepeatDateOption.weekly(frequency: 1, weekdays: [.tuesday])
+        let startDate = date(year: 2022, month: 5, day: 31, nanosecond: 123_456_000)
+
+        let repeat1 = calendar.nextDate(
+            after: startDate,
+            option: option
+        )!
+
+        #expect(nanosecond(from: repeat1) == nanosecond(from: startDate))
     }
 
     // MARK: - Monthly
@@ -424,6 +451,48 @@ struct CustomRepeatDateTests {
         #expect(repeat5 == date(year: 2024, month: 1, day: 1, hour: 0, minute: 0, second: 0))
     }
 
+    @Test func monthlyDaysOfMonthPreservesNanoseconds() {
+        let option = CustomRepeatDateOption.monthly(frequency: 1, option: .daysOfMonth(days: [31]))
+        let startDate = date(year: 2022, month: 5, day: 31, nanosecond: 123_456_000)
+
+        let repeat1 = calendar.nextDate(
+            after: startDate,
+            option: option
+        )!
+
+        #expect(nanosecond(from: repeat1) == nanosecond(from: startDate))
+    }
+
+    @Test func monthlyLastDayPreservesNanoseconds() {
+        let option = CustomRepeatDateOption.monthly(
+            frequency: 1,
+            option: .daysOfMonth(days: [CustomRepeatDateOption.MonthlyOption.lastDay])
+        )
+        let startDate = date(year: 2022, month: 5, day: 31, nanosecond: 123_456_000)
+
+        let repeat1 = calendar.nextDate(
+            after: startDate,
+            option: option
+        )!
+
+        #expect(nanosecond(from: repeat1) == nanosecond(from: startDate))
+    }
+
+    @Test func monthlyDaysOfWeekPreservesNanoseconds() {
+        let option = CustomRepeatDateOption.monthly(
+            frequency: 1,
+            option: .daysOfWeek(weekdayOrdinal: .second, weekday: .tuesday)
+        )
+        let startDate = date(year: 2022, month: 5, day: 10, nanosecond: 123_456_000)
+
+        let repeat1 = calendar.nextDate(
+            after: startDate,
+            option: option
+        )!
+
+        #expect(nanosecond(from: repeat1) == nanosecond(from: startDate))
+    }
+
     @Test func monthlyDaysOfMonthNormalizesDaylightSavingGap() {
         let option = CustomRepeatDateOption.monthly(frequency: 1, option: .daysOfMonth(days: [10]))
 
@@ -662,6 +731,18 @@ struct CustomRepeatDateTests {
         #expect(repeat5 == date(year: 2024, month: 6, day: 1))
     }
 
+    @Test func yearlyDaysOfYearPreservesNanoseconds() {
+        let option = CustomRepeatDateOption.yearly(frequency: 1, option: .daysOfYear(months: [5]))
+        let startDate = date(year: 2022, month: 5, day: 31, nanosecond: 123_456_000)
+
+        let repeat1 = calendar.nextDate(
+            after: startDate,
+            option: option
+        )!
+
+        #expect(nanosecond(from: repeat1) == nanosecond(from: startDate))
+    }
+
     @Test func yearlyCustomRepeatDateDaysOfWeekFirstDayOfYearIsIncluded() {
         let option = CustomRepeatDateOption.yearly(frequency: 1, option: .daysOfWeek(months: [4, 5, 6], weekdayOrdinal: .first, weekday: .monday))
 
@@ -696,5 +777,20 @@ struct CustomRepeatDateTests {
         #expect(components.hour == 3)
         #expect(components.minute == 30)
         #expect(components.second == 0)
+    }
+
+    @Test func yearlyDaysOfWeekPreservesNanoseconds() {
+        let option = CustomRepeatDateOption.yearly(
+            frequency: 1,
+            option: .daysOfWeek(months: [5], weekdayOrdinal: .second, weekday: .tuesday)
+        )
+        let startDate = date(year: 2022, month: 5, day: 10, nanosecond: 123_456_000)
+
+        let repeat1 = calendar.nextDate(
+            after: startDate,
+            option: option
+        )!
+
+        #expect(nanosecond(from: repeat1) == nanosecond(from: startDate))
     }
 }

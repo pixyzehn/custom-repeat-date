@@ -29,7 +29,7 @@ public extension Calendar {
             let afterDate = self.date(byAdding: .weekOfYear, value: frequency, to: date) ?? date
 
             for weekday in weekdays.sorted() {
-                var dateComponents = dateComponents([.hour, .minute, .second], from: date)
+                var dateComponents = dateComponents([.hour, .minute, .second, .nanosecond], from: date)
                 dateComponents.weekday = weekday.rawValue
 
                 enumerateDates(
@@ -47,7 +47,7 @@ public extension Calendar {
                     stop = true
                 }
 
-                var afterDateComponents = self.dateComponents([.hour, .minute, .second], from: afterDate)
+                var afterDateComponents = self.dateComponents([.hour, .minute, .second, .nanosecond], from: afterDate)
                 afterDateComponents.weekday = weekday.rawValue
 
                 // Set the start of the day - 1s to be able to include the start of the week
@@ -82,7 +82,7 @@ public extension Calendar {
                 var result = [Date]()
                 let year = component(.year, from: date)
                 let month = component(.month, from: date)
-                let timeComponents = dateComponents([.hour, .minute, .second], from: date)
+                let timeComponents = dateComponents([.hour, .minute, .second, .nanosecond], from: date)
                 let baseAfterDate = self.date(byAdding: .month, value: frequency, to: startOfMonth(for: date)) ?? date
                 let maxMonthIterations = 4800 / gcd(4800, frequency)
                 let days: [Int] = {
@@ -152,7 +152,7 @@ public extension Calendar {
 
             case let .daysOfWeek(weekdayOrdinal, weekday):
                 var result = [Date]()
-                let timeComponents = dateComponents([.hour, .minute, .second], from: date)
+                let timeComponents = dateComponents([.hour, .minute, .second, .nanosecond], from: date)
                 let year = component(.year, from: date)
                 let month = component(.month, from: date)
 
@@ -169,7 +169,7 @@ public extension Calendar {
 
                 let maxMonthIterations = 4800 / gcd(4800, frequency)
                 var afterDate = self.date(byAdding: .month, value: frequency, to: startOfMonth(for: date)) ?? date
-                let afterTimeComponents = dateComponents([.hour, .minute, .second], from: afterDate)
+                let afterTimeComponents = dateComponents([.hour, .minute, .second, .nanosecond], from: afterDate)
 
                 for _ in 0 ..< maxMonthIterations {
                     let targetYear = component(.year, from: afterDate)
@@ -205,7 +205,7 @@ public extension Calendar {
                 var result = [Date]()
                 let year = component(.year, from: date)
                 let day = component(.day, from: date)
-                let timeComponents = dateComponents([.hour, .minute, .second], from: date)
+                let timeComponents = dateComponents([.hour, .minute, .second, .nanosecond], from: date)
                 let afterDate = self.date(byAdding: .year, value: frequency, to: startOfYear(for: date)) ?? date
                 let maxYearIterations = 400 / gcd(400, frequency)
 
@@ -222,7 +222,7 @@ public extension Calendar {
 
                     var targetDate = afterDate
                     for _ in 0 ..< maxYearIterations {
-                        var afterDateComponents = self.dateComponents([.hour, .minute, .second], from: targetDate)
+                        var afterDateComponents = self.dateComponents([.hour, .minute, .second, .nanosecond], from: targetDate)
                         afterDateComponents.year = component(.year, from: targetDate)
                         afterDateComponents.month = month
                         afterDateComponents.day = day
@@ -244,7 +244,7 @@ public extension Calendar {
                 }
 
                 var result = [Date]()
-                let timeComponents = dateComponents([.hour, .minute, .second], from: date)
+                let timeComponents = dateComponents([.hour, .minute, .second, .nanosecond], from: date)
                 let year = component(.year, from: date)
                 let sortedMonths = months.sorted()
 
@@ -263,7 +263,7 @@ public extension Calendar {
 
                 let maxYearIterations = 400 / gcd(400, frequency)
                 let baseAfterDate = self.date(byAdding: .year, value: frequency, to: startOfYear(for: date)) ?? date
-                let afterTimeComponents = dateComponents([.hour, .minute, .second], from: baseAfterDate)
+                let afterTimeComponents = dateComponents([.hour, .minute, .second, .nanosecond], from: baseAfterDate)
 
                 for month in sortedMonths {
                     var afterDate = baseAfterDate
@@ -302,6 +302,7 @@ public extension Calendar {
         dateComponents.hour = timeComponents.hour
         dateComponents.minute = timeComponents.minute
         dateComponents.second = timeComponents.second
+        dateComponents.nanosecond = timeComponents.nanosecond
         dateComponents.weekdayOrdinal = weekdayOrdinal.rawValue
         dateComponents.weekday = weekday.rawValue
 
@@ -330,6 +331,7 @@ public extension Calendar {
         dateComponents.hour = timeComponents.hour
         dateComponents.minute = timeComponents.minute
         dateComponents.second = timeComponents.second
+        dateComponents.nanosecond = timeComponents.nanosecond
 
         return fixedDayDate(from: dateComponents)
     }

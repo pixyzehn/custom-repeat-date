@@ -82,6 +82,7 @@ public extension Calendar {
                 var result = [Date]()
                 let year = component(.year, from: date)
                 let month = component(.month, from: date)
+                let timeComponents = dateComponents([.hour, .minute, .second], from: date)
                 let baseAfterDate = self.date(byAdding: .month, value: frequency, to: startOfMonth(for: date)) ?? date
                 let maxMonthIterations = 4800 / gcd(4800, frequency)
                 let days: [Int] = {
@@ -102,23 +103,14 @@ public extension Calendar {
                             result.append(endOfMonth)
                         }
                     } else {
-                        var dateComponents = dateComponents([.hour, .minute, .second], from: date)
-                        dateComponents.day = day
-
-                        enumerateDates(
-                            startingAfter: date,
-                            matching: dateComponents,
-                            matchingPolicy: .strict,
-                            repeatedTimePolicy: .first,
-                            direction: .forward
-                        ) { matchingDate, _, stop in
-                            guard let matchingDate = matchingDate else { stop = true; return }
-                            let matchingYear = component(.year, from: matchingDate)
-                            let matchingMonth = component(.month, from: matchingDate)
-                            if matchingYear == year, matchingMonth == month {
-                                result.append(matchingDate)
-                            }
-                            stop = true
+                        if let matchingDate = fixedDayDate(
+                            year: year,
+                            month: month,
+                            day: day,
+                            timeComponents: timeComponents
+                        ),
+                            matchingDate > date {
+                            result.append(matchingDate)
                         }
                     }
 
@@ -143,21 +135,15 @@ public extension Calendar {
                             result.append(endOfMonth)
                         }
                     } else {
-                        var afterDateComponents = dateComponents([.hour, .minute, .second], from: afterDate)
-                        afterDateComponents.day = day
-
-                        // Set the start of the day - 1s to be able to include the start of the month
-                        let startingAfter = startOfDay(for: startOfMonth(for: afterDate)).addingTimeInterval(-1)
-                        enumerateDates(
-                            startingAfter: startingAfter,
-                            matching: afterDateComponents,
-                            matchingPolicy: .strict,
-                            repeatedTimePolicy: .first,
-                            direction: .forward
-                        ) { matchingDate, _, stop in
-                            guard let matchingDate = matchingDate else { stop = true; return }
+                        let afterYear = component(.year, from: afterDate)
+                        let afterMonth = component(.month, from: afterDate)
+                        if let matchingDate = fixedDayDate(
+                            year: afterYear,
+                            month: afterMonth,
+                            day: day,
+                            timeComponents: timeComponents
+                        ) {
                             result.append(matchingDate)
-                            stop = true
                         }
                     }
                 }
@@ -219,27 +205,19 @@ public extension Calendar {
                 var result = [Date]()
                 let year = component(.year, from: date)
                 let day = component(.day, from: date)
+                let timeComponents = dateComponents([.hour, .minute, .second], from: date)
                 let afterDate = self.date(byAdding: .year, value: frequency, to: startOfYear(for: date)) ?? date
                 let maxYearIterations = 400 / gcd(400, frequency)
 
                 for month in months.sorted() {
-                    var dateComponents = dateComponents([.hour, .minute, .second], from: date)
-                    dateComponents.month = month
-                    dateComponents.day = day
-
-                    enumerateDates(
-                        startingAfter: date,
-                        matching: dateComponents,
-                        matchingPolicy: .strict,
-                        repeatedTimePolicy: .first,
-                        direction: .forward
-                    ) { matchingDate, _, stop in
-                        guard let matchingDate = matchingDate else { stop = true; return }
-                        let matchingYear = component(.year, from: matchingDate)
-                        if matchingYear == year {
-                            result.append(matchingDate)
-                        }
-                        stop = true
+                    if let matchingDate = fixedDayDate(
+                        year: year,
+                        month: month,
+                        day: day,
+                        timeComponents: timeComponents
+                    ),
+                        matchingDate > date {
+                        result.append(matchingDate)
                     }
 
                     var targetDate = afterDate
@@ -249,7 +227,7 @@ public extension Calendar {
                         afterDateComponents.month = month
                         afterDateComponents.day = day
 
-                        if let matchingDate = exactDate(from: afterDateComponents) {
+                        if let matchingDate = fixedDayDate(from: afterDateComponents) {
                             result.append(matchingDate)
                             break
                         }
@@ -339,13 +317,32 @@ public extension Calendar {
         return matchingDate
     }
 
-    private func exactDate(from dateComponents: DateComponents) -> Date? {
+    private func fixedDayDate(
+        year: Int,
+        month: Int,
+        day: Int,
+        timeComponents: DateComponents
+    ) -> Date? {
+        var dateComponents = DateComponents()
+        dateComponents.year = year
+        dateComponents.month = month
+        dateComponents.day = day
+        dateComponents.hour = timeComponents.hour
+        dateComponents.minute = timeComponents.minute
+        dateComponents.second = timeComponents.second
+
+        return fixedDayDate(from: dateComponents)
+    }
+
+    private func fixedDayDate(from dateComponents: DateComponents) -> Date? {
         guard let date = self.date(from: dateComponents) else {
             return nil
         }
 
-        let components: Set<Calendar.Component> = [.year, .month, .day, .hour, .minute, .second]
-        guard self.dateComponents(components, from: date) == dateComponents else {
+        let resolvedComponents = self.dateComponents([.year, .month, .day], from: date)
+        guard resolvedComponents.year == dateComponents.year,
+              resolvedComponents.month == dateComponents.month,
+              resolvedComponents.day == dateComponents.day else {
             return nil
         }
 

@@ -21,6 +21,32 @@ struct CustomRepeatDateTests {
         return calendar.date(from: dateComponents)!
     }
 
+    var daylightSavingCalendar: Calendar = {
+        var calendar = Calendar(identifier: .gregorian)
+        calendar.timeZone = TimeZone(identifier: "America/Los_Angeles")!
+        calendar.firstWeekday = 2
+        return calendar
+    }()
+
+    func date(
+        calendar: Calendar,
+        year: Int,
+        month: Int,
+        day: Int,
+        hour: Int? = nil,
+        minute: Int? = nil,
+        second: Int? = nil
+    ) -> Date {
+        var dateComponents = DateComponents()
+        dateComponents.year = year
+        dateComponents.month = month
+        dateComponents.day = day
+        dateComponents.hour = hour ?? 22
+        dateComponents.minute = minute ?? 22
+        dateComponents.second = second ?? 22
+        return calendar.date(from: dateComponents)!
+    }
+
     // MARK: - Daily
 
     @Test func dailyCustomRepeatDate() {
@@ -398,6 +424,26 @@ struct CustomRepeatDateTests {
         #expect(repeat5 == date(year: 2024, month: 1, day: 1, hour: 0, minute: 0, second: 0))
     }
 
+    @Test func monthlyDaysOfMonthNormalizesDaylightSavingGap() {
+        let option = CustomRepeatDateOption.monthly(frequency: 1, option: .daysOfMonth(days: [10]))
+
+        let repeat1 = daylightSavingCalendar.nextDate(
+            after: date(calendar: daylightSavingCalendar, year: 2024, month: 2, day: 10, hour: 2, minute: 30, second: 0),
+            option: option
+        )!
+        let components = daylightSavingCalendar.dateComponents(
+            [.year, .month, .day, .hour, .minute, .second],
+            from: repeat1
+        )
+
+        #expect(components.year == 2024)
+        #expect(components.month == 3)
+        #expect(components.day == 10)
+        #expect(components.hour == 3)
+        #expect(components.minute == 30)
+        #expect(components.second == 0)
+    }
+
     // MARK: - Yearly
 
     @Test func yearlyCustomRepeatDateDaysOfYear() {
@@ -630,5 +676,25 @@ struct CustomRepeatDateTests {
         #expect(repeat3 == date(year: 2024, month: 4, day: 1))
         #expect(repeat4 == date(year: 2024, month: 5, day: 6))
         #expect(repeat5 == date(year: 2024, month: 6, day: 3))
+    }
+
+    @Test func yearlyDaysOfYearNormalizesDaylightSavingGap() {
+        let option = CustomRepeatDateOption.yearly(frequency: 1, option: .daysOfYear(months: [3]))
+
+        let repeat1 = daylightSavingCalendar.nextDate(
+            after: date(calendar: daylightSavingCalendar, year: 2024, month: 1, day: 10, hour: 2, minute: 30, second: 0),
+            option: option
+        )!
+        let components = daylightSavingCalendar.dateComponents(
+            [.year, .month, .day, .hour, .minute, .second],
+            from: repeat1
+        )
+
+        #expect(components.year == 2024)
+        #expect(components.month == 3)
+        #expect(components.day == 10)
+        #expect(components.hour == 3)
+        #expect(components.minute == 30)
+        #expect(components.second == 0)
     }
 }

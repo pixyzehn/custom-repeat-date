@@ -489,6 +489,16 @@ struct CustomRepeatDateTests {
         #expect(repeat5 == date(year: 5019, month: 1, day: 10))
     }
 
+    @Test func yearlyCustomRepeatDateDaysOfYearRespectsFrequencyWhenDateDoesNotExistEveryYear() {
+        let option = CustomRepeatDateOption.yearly(frequency: 3, option: .daysOfYear(months: [2]))
+
+        let repeat1 = calendar.nextDate(after: date(year: 2020, month: 2, day: 29), option: option)!
+        let repeat2 = calendar.nextDate(after: repeat1, option: option)!
+
+        #expect(repeat1 == date(year: 2032, month: 2, day: 29))
+        #expect(repeat2 == date(year: 2044, month: 2, day: 29))
+    }
+
     @Test func yearlyCustomRepeatDateDaysOfWeek() {
         let option = CustomRepeatDateOption.yearly(frequency: 2, option: .daysOfWeek(months: [3, 8, 9], weekdayOrdinal: .first, weekday: .saturday))
 

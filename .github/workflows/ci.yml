@@ -11,7 +11,7 @@ on:
 
 jobs:
   tests:
-    runs-on: macOS-27
+    runs-on: xcode-27
     timeout-minutes: 10
     strategy:
       matrix:

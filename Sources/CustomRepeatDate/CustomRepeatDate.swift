@@ -24,48 +24,49 @@ public extension Calendar {
                 return nil
             }
 
-            var result = [Date]()
-            let weekOfYear = component(.weekOfYear, from: date)
-            let afterDate = self.date(byAdding: .weekOfYear, value: frequency, to: date) ?? date
-
-            for weekday in weekdays.sorted() {
-                var dateComponents = dateComponents([.hour, .minute, .second, .nanosecond], from: date)
-                dateComponents.weekday = weekday.rawValue
-
-                enumerateDates(
-                    startingAfter: date,
-                    matching: dateComponents,
-                    matchingPolicy: .strict,
-                    repeatedTimePolicy: .first,
-                    direction: .forward
-                ) { matchingDate, _, stop in
-                    guard let matchingDate = matchingDate else { stop = true; return }
-                    let matchingWeekOfYear = component(.weekOfYear, from: matchingDate)
-                    if matchingWeekOfYear == weekOfYear {
-                        result.append(matchingDate)
-                    }
-                    stop = true
-                }
-
-                var afterDateComponents = self.dateComponents([.hour, .minute, .second, .nanosecond], from: afterDate)
-                afterDateComponents.weekday = weekday.rawValue
-
-                // Set the start of the day - 1s to be able to include the start of the week
-                let startingAfter = startOfDay(for: startOfWeek(for: afterDate)).addingTimeInterval(-1)
-                enumerateDates(
-                    startingAfter: startingAfter,
-                    matching: afterDateComponents,
-                    matchingPolicy: .strict,
-                    repeatedTimePolicy: .first,
-                    direction: .forward
-                ) { matchingDate, _, stop in
-                    guard let matchingDate = matchingDate else { stop = true; return }
-                    result.append(matchingDate)
-                    stop = true
-                }
+            guard let currentWeek = dateInterval(of: .weekOfYear, for: date) else {
+                return nil
             }
 
-            return result.sorted().first
+            let timeComponents = dateComponents([.hour, .minute, .second, .nanosecond], from: date)
+            var week = currentWeek
+
+            while true {
+                var result = [Date]()
+                for weekday in weekdays {
+                    // Match the weekday itself because a timezone can skip a whole day.
+                    guard let targetDay = nextDate(
+                        after: week.start.addingTimeInterval(-1),
+                        matching: DateComponents(weekday: weekday.rawValue),
+                        matchingPolicy: .strict
+                    ), targetDay < week.end else {
+                        continue
+                    }
+
+                    // Resolve the original wall-clock time on the selected day so a
+                    // DST gap cannot skip a week or change another weekday's time.
+                    if let matchingDate = fixedDayDate(
+                        year: component(.year, from: targetDay),
+                        month: component(.month, from: targetDay),
+                        day: component(.day, from: targetDay),
+                        timeComponents: timeComponents
+                    ), matchingDate > date {
+                        result.append(matchingDate)
+                    }
+                }
+                if let nextDate = result.min() {
+                    return nextDate
+                }
+
+                // A selected weekday may not exist after a timezone skips a date.
+                // Keep searching in frequency-sized steps to preserve the schedule.
+                guard let nextWeekStart = self.date(byAdding: .weekOfYear, value: frequency, to: week.start),
+                      let nextWeek = dateInterval(of: .weekOfYear, for: nextWeekStart),
+                      nextWeek.start > week.start else {
+                    return nil
+                }
+                week = nextWeek
+            }
 
         case let .monthly(frequency, option):
             guard 1 ... 999 ~= frequency else {

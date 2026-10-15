@@ -207,6 +207,66 @@ struct CustomRepeatDateTests {
         #expect(nanosecond(from: repeat1) == nanosecond(from: startDate))
     }
 
+    @Test func weeklyNormalizesDaylightSavingGapInCurrentWeek() {
+        let start = date(calendar: daylightSavingCalendar, year: 2024, month: 3, day: 8, hour: 2, minute: 30, second: 0)
+        let expected = date(calendar: daylightSavingCalendar, year: 2024, month: 3, day: 10, hour: 3, minute: 30, second: 0)
+
+        #expect(daylightSavingCalendar.nextDate(after: start, option: .weekly(frequency: 2, weekdays: [.sunday])) == expected)
+    }
+
+    @Test func weeklyNormalizesDaylightSavingGapInTargetWeek() {
+        let expected = date(calendar: daylightSavingCalendar, year: 2024, month: 3, day: 10, hour: 3, minute: 30, second: 0)
+
+        let sunday = date(calendar: daylightSavingCalendar, year: 2024, month: 2, day: 25, hour: 2, minute: 30, second: 0)
+        #expect(daylightSavingCalendar.nextDate(after: sunday, option: .weekly(frequency: 2, weekdays: [.sunday])) == expected)
+    }
+
+    @Test func weeklyPreservesTimeWhenAnchorCrossesDaylightSavingGap() {
+        let start = date(calendar: daylightSavingCalendar, year: 2024, month: 2, day: 25, hour: 2, minute: 30, second: 0)
+        let expected = date(calendar: daylightSavingCalendar, year: 2024, month: 3, day: 4, hour: 2, minute: 30, second: 0)
+
+        #expect(daylightSavingCalendar.nextDate(after: start, option: .weekly(frequency: 2, weekdays: [.monday])) == expected)
+    }
+
+    @Test(arguments: 1 ... 7)
+    func weeklyRespectsFirstWeekdayAcrossYearBoundary(firstWeekday: Int) {
+        var calendar = calendar
+        calendar.firstWeekday = firstWeekday
+        let start = date(year: 2023, month: 12, day: 31)
+        let expected = date(year: 2024, month: 1, day: 14)
+
+        #expect(calendar.nextDate(after: start, option: .weekly(frequency: 2, weekdays: [.sunday])) == expected)
+    }
+
+    @Test(arguments: [24, 26])
+    func weeklyPreservesWeekdayAcrossSkippedDate(startDay: Int) {
+        var calendar = calendar
+        calendar.timeZone = TimeZone(identifier: "Pacific/Apia")!
+        let start = date(calendar: calendar, year: 2011, month: 12, day: startDay, hour: 10, minute: 0, second: 0)
+        let expected = date(calendar: calendar, year: 2011, month: 12, day: 31, hour: 10, minute: 0, second: 0)
+
+        #expect(calendar.nextDate(after: start, option: .weekly(frequency: 1, weekdays: [.saturday])) == expected)
+    }
+
+    @Test(arguments: [1, 2])
+    func weeklyContinuesAfterSkippedWeekday(frequency: Int) {
+        var calendar = calendar
+        calendar.timeZone = TimeZone(identifier: "Pacific/Apia")!
+        let start = date(calendar: calendar, year: 2011, month: 12, day: 30 - 7 * frequency, hour: 10, minute: 0, second: 0)
+        let expected = date(calendar: calendar, year: 2012, month: 1, day: 7 * frequency - 1, hour: 10, minute: 0, second: 0)
+
+        #expect(calendar.nextDate(after: start, option: .weekly(frequency: frequency, weekdays: [.friday])) == expected)
+    }
+
+    @Test func weeklyUsesRemainingWeekdayWhenAnotherIsSkipped() {
+        var calendar = calendar
+        calendar.timeZone = TimeZone(identifier: "Pacific/Apia")!
+        let start = date(calendar: calendar, year: 2011, month: 12, day: 24, hour: 10, minute: 0, second: 0)
+        let expected = date(calendar: calendar, year: 2011, month: 12, day: 31, hour: 10, minute: 0, second: 0)
+
+        #expect(calendar.nextDate(after: start, option: .weekly(frequency: 1, weekdays: [.friday, .saturday])) == expected)
+    }
+
     // MARK: - Monthly
 
     @Test func monthlyCustomRepeatDateDaysOfMonth() {

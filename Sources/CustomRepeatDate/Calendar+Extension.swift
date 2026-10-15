@@ -16,8 +16,13 @@ extension Calendar {
     }
 
     /// Return the last day of a given month, keepting the time.
-    func endOfMonth(for date: Date) -> Date {
-        self.date(byAdding: DateComponents(month: 1, day: -1), to: startOfMonth(for: date))!
+    func endOfMonth(for date: Date) -> Date? {
+        guard let lastDay = range(of: .day, in: .month, for: date)?.last else {
+            return nil
+        }
+        var components = dateComponents([.era, .year, .month, .hour, .minute, .second, .nanosecond], from: date)
+        components.day = lastDay
+        return self.date(from: components)
     }
 
     /// Return the first day of a given year, keepting the time.

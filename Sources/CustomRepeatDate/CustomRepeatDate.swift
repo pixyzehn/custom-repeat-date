@@ -3,14 +3,23 @@ import Foundation
 public extension Calendar {
     /// Computes the next date which matches a given option.
     ///
-    /// - parameter date: The starting date.
+    /// - parameter date: The starting date, within years 1 through 9999 CE (UTC).
     /// - parameter option: The custom repeat date option.
-    /// - returns: A `Date` representing the result of the search, or `nil` if a result could not be found or a calendar isn't Gregorian.
+    /// - returns: A later date within the supported range, or `nil` if no result
+    ///   exists, the input is invalid, or the calendar is not Gregorian.
     func nextDate(after date: Date, option: CustomRepeatDateOption) -> Date? {
-        guard identifier == .gregorian else {
+        guard identifier == .gregorian, date.isSupportedRepeatDate,
+              component(.era, from: date) == 1 else {
             return nil
         }
+        guard let result = nextRepeatDate(after: date, option: option),
+              result.isSupportedRepeatDate, result > date else {
+            return nil
+        }
+        return result
+    }
 
+    private func nextRepeatDate(after date: Date, option: CustomRepeatDateOption) -> Date? {
         switch option {
         case let .daily(frequency):
             guard 1 ... 999 ~= frequency else {
@@ -31,9 +40,10 @@ public extension Calendar {
             let timeComponents = dateComponents([.hour, .minute, .second, .nanosecond], from: date)
             var week = currentWeek
 
-            while true {
+            // A Gregorian 400-year cycle contains 20,871 weeks.
+            for _ in 0 ... 20_871 {
                 var result = [Date]()
-                for weekday in weekdays {
+                for weekday in Set(weekdays) {
                     // Match the weekday itself because a timezone can skip a whole day.
                     guard let targetDay = nextDate(
                         after: week.start.addingTimeInterval(-1),
@@ -62,11 +72,12 @@ public extension Calendar {
                 // Keep searching in frequency-sized steps to preserve the schedule.
                 guard let nextWeekStart = self.date(byAdding: .weekOfYear, value: frequency, to: week.start),
                       let nextWeek = dateInterval(of: .weekOfYear, for: nextWeekStart),
-                      nextWeek.start > week.start else {
+                      nextWeek.start > week.start, nextWeek.start.isSupportedRepeatDate else {
                     return nil
                 }
                 week = nextWeek
             }
+            return nil
 
         case let .monthly(frequency, option):
             guard 1 ... 999 ~= frequency else {
@@ -87,7 +98,7 @@ public extension Calendar {
                     return nil
                 }
 
-                for day in days {
+                for day in Set(days) {
                     var targetMonth = currentMonth
                     // Include this month, then search one complete Gregorian cycle.
                     for _ in 0 ... maxMonthIterations {
@@ -108,7 +119,7 @@ public extension Calendar {
                         // Missing dates, including timezone-skipped days, must not
                         // terminate the recurrence or change its frequency.
                         guard let nextMonth = self.date(byAdding: .month, value: frequency, to: targetMonth),
-                              nextMonth > targetMonth else {
+                              nextMonth > targetMonth, nextMonth.isSupportedRepeatDate else {
                             break
                         }
                         targetMonth = nextMonth
@@ -135,7 +146,10 @@ public extension Calendar {
                 }
 
                 let maxMonthIterations = 4800 / gcd(4800, frequency)
-                var afterDate = self.date(byAdding: .month, value: frequency, to: startOfMonth(for: date)) ?? date
+                guard let monthStart = startOfMonth(for: date),
+                      var afterDate = advancing(.month, by: frequency, from: monthStart) else {
+                    return result.min()
+                }
 
                 for _ in 0 ..< maxMonthIterations {
                     let targetYear = component(.year, from: afterDate)
@@ -151,7 +165,8 @@ public extension Calendar {
                         break
                     }
 
-                    afterDate = self.date(byAdding: .month, value: frequency, to: afterDate) ?? afterDate
+                    guard let next = advancing(.month, by: frequency, from: afterDate) else { break }
+                    afterDate = next
                 }
 
                 return result.sorted().first
@@ -172,10 +187,10 @@ public extension Calendar {
                 let year = component(.year, from: date)
                 let day = component(.day, from: date)
                 let timeComponents = dateComponents([.hour, .minute, .second, .nanosecond], from: date)
-                let afterDate = self.date(byAdding: .year, value: frequency, to: startOfYear(for: date)) ?? date
+                let afterDate = startOfYear(for: date).flatMap { advancing(.year, by: frequency, from: $0) }
                 let maxYearIterations = 400 / gcd(400, frequency)
 
-                for month in months.sorted() {
+                for month in Set(months).sorted() {
                     if let matchingDate = fixedDayDate(
                         year: year,
                         month: month,
@@ -186,7 +201,7 @@ public extension Calendar {
                         result.append(matchingDate)
                     }
 
-                    var targetDate = afterDate
+                    guard var targetDate = afterDate else { continue }
                     for _ in 0 ..< maxYearIterations {
                         var afterDateComponents = self.dateComponents([.hour, .minute, .second, .nanosecond], from: targetDate)
                         afterDateComponents.year = component(.year, from: targetDate)
@@ -198,7 +213,8 @@ public extension Calendar {
                             break
                         }
 
-                        targetDate = self.date(byAdding: .year, value: frequency, to: targetDate) ?? targetDate
+                        guard let next = advancing(.year, by: frequency, from: targetDate) else { break }
+                        targetDate = next
                     }
                 }
 
@@ -212,7 +228,7 @@ public extension Calendar {
                 var result = [Date]()
                 let timeComponents = dateComponents([.hour, .minute, .second, .nanosecond], from: date)
                 let year = component(.year, from: date)
-                let sortedMonths = months.sorted()
+                let sortedMonths = Set(months).sorted()
 
                 for month in sortedMonths {
                     if let matchingDate = weekdayOrdinalDate(
@@ -228,7 +244,10 @@ public extension Calendar {
                 }
 
                 let maxYearIterations = 400 / gcd(400, frequency)
-                let baseAfterDate = self.date(byAdding: .year, value: frequency, to: startOfYear(for: date)) ?? date
+                guard let yearStart = startOfYear(for: date),
+                      let baseAfterDate = advancing(.year, by: frequency, from: yearStart) else {
+                    return result.min()
+                }
 
                 for month in sortedMonths {
                     var afterDate = baseAfterDate
@@ -245,13 +264,22 @@ public extension Calendar {
                             break
                         }
 
-                        afterDate = self.date(byAdding: .year, value: frequency, to: afterDate) ?? afterDate
+                        guard let next = advancing(.year, by: frequency, from: afterDate) else { break }
+                        afterDate = next
                     }
                 }
 
                 return result.sorted().first
             }
         }
+    }
+
+    private func advancing(_ component: Calendar.Component, by value: Int, from date: Date) -> Date? {
+        guard let next = self.date(byAdding: component, value: value, to: date),
+              next.isSupportedRepeatDate, next > date else {
+            return nil
+        }
+        return next
     }
 
     private func weekdayOrdinalDate(

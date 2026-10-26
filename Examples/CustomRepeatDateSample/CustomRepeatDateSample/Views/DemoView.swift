@@ -12,10 +12,9 @@ struct DemoView: View {
         var result = [Date]()
         var date = startDate
         for _ in 0 ..< numberOfGeneratedItems {
-            if let newDate = calendar.nextDate(after: date, option: option) {
-                result.append(newDate)
-                date = newDate
-            }
+            guard let newDate = calendar.nextDate(after: date, option: option), newDate > date else { break }
+            result.append(newDate)
+            date = newDate
         }
 
         withAnimation {
@@ -25,7 +24,9 @@ struct DemoView: View {
 
     func shortWeekdaySymbol(date: Date) -> String {
         let rawValue = calendar.component(.weekday, from: date)
-        return calendar.shortStandaloneWeekdaySymbols[rawValue - 1]
+        let symbols = calendar.shortStandaloneWeekdaySymbols
+        guard rawValue >= 1, rawValue <= symbols.count else { return "" }
+        return symbols[rawValue - 1]
     }
 
     var body: some View {
@@ -34,12 +35,12 @@ struct DemoView: View {
                 DatePicker("start_date", selection: $startDate)
             }
             Section {
-                ForEach(0 ..< result.count, id: \.self) { i in
+                ForEach(Array(result.enumerated()), id: \.element) { i, date in
                     HStack {
                         Text("\(i + 1)")
                         Spacer()
-                        Text(result[i].formatted(date: .long, time: .shortened))
-                        Text(shortWeekdaySymbol(date: result[i]))
+                        Text(date.formatted(date: .long, time: .shortened))
+                        Text(shortWeekdaySymbol(date: date))
                     }
                     .font(.system(.caption2, design: .monospaced))
                 }

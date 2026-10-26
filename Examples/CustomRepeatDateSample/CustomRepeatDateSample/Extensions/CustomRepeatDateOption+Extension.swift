@@ -50,7 +50,10 @@ extension CustomRepeatDateOption {
         case let .yearly(frequency: frequency, option: option):
             switch option {
             case let .daysOfYear(months):
-                let monthNames = months.map { DateFormatter().monthSymbols[$0 - 1] }
+                let symbols = DateFormatter().monthSymbols ?? []
+                let monthNames = months.compactMap { month in
+                    month >= 1 && month <= symbols.count ? symbols[month - 1] : nil
+                }
                 let monthNamesList = ListFormatter.localizedString(byJoining: monthNames)
 
                 if frequency == 1 {
@@ -59,7 +62,10 @@ extension CustomRepeatDateOption {
                     return String(format: NSLocalizedString("evnet_every_x_years_in", comment: ""), "\(frequency)", monthNamesList)
                 }
             case let .daysOfWeek(months, weekdayOrdinal, weekday):
-                let monthNames = months.map { DateFormatter().monthSymbols[$0 - 1] }
+                let symbols = DateFormatter().monthSymbols ?? []
+                let monthNames = months.compactMap { month in
+                    month >= 1 && month <= symbols.count ? symbols[month - 1] : nil
+                }
                 let monthNamesList = ListFormatter.localizedString(byJoining: monthNames)
 
                 if frequency == 1 {
@@ -79,6 +85,6 @@ extension CustomRepeatDateOption {
         let numberFormatter = NumberFormatter()
         numberFormatter.numberStyle = .ordinal
         numberFormatter.locale = Locale.current
-        return numberFormatter.string(for: day)!
+        return numberFormatter.string(for: day) ?? String(day)
     }
 }

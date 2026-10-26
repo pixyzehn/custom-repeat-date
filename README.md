@@ -20,6 +20,11 @@ let repeat4 = calendar.nextDate(after: repeat3, option: option)!   // 2023-02-14
 let repeat5 = calendar.nextDate(after: repeat4, option: option)!   // 2023-05-09 22:22:22 +0000
 ```
 
+Handle the optional result in production code. Invalid options, non-finite dates,
+dates outside years 1 through 9999 CE (UTC), and searches with no matching date
+return `nil`. Dates must also be in the CE era in the calendar's time zone.
+Every returned date is strictly later than the starting date.
+
 To see how it works in practice, check out [Examples](./Examples).
 
 ex. 1 | ex. 2

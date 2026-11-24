@@ -282,7 +282,7 @@ public extension Calendar {
         return next
     }
 
-    private func weekdayOrdinalDate(
+    internal func weekdayOrdinalDate(
         year: Int,
         month: Int,
         timeComponents: DateComponents,
@@ -312,7 +312,7 @@ public extension Calendar {
         return matchingDate
     }
 
-    private func fixedDayDate(
+    internal func fixedDayDate(
         year: Int,
         month: Int,
         day: Int,

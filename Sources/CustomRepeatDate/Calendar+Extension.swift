@@ -38,10 +38,12 @@ extension Calendar {
 }
 
 extension Date {
+    static let repeatDateUpperLimit = 253_402_300_800.0
+
     // Bound inputs before calling Foundation, which cannot safely decompose
     // arbitrary Double values. These UTC bounds cover years 1 through 9999 CE.
     var isSupportedRepeatDate: Bool {
         let seconds = timeIntervalSince1970
-        return seconds.isFinite && seconds >= -62_135_769_600 && seconds < 253_402_300_800
+        return seconds.isFinite && seconds >= -62_135_769_600 && seconds < Self.repeatDateUpperLimit
     }
 }
